@@ -1,0 +1,43 @@
+* {
+  -webkit-border-radius: 0 !important;
+  -moz-border-radius: 0 !important;
+  border-radius: 0 !important;
+}
+
+.tree-wrapper, .panel, .panel-body {
+  height: inherit;
+}
+
+.panel {
+  margin-bottom: 2px;
+}
+
+.pagination {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.glyphicon {
+  font-size: 1em;
+}
+
+.tree-wrapper {
+  padding: 10px 0 20px 20px;
+}
+
+.panel-heading {
+  min-height: 30px;
+  line-height: 30px;
+  padding: 0 15px 0 15px;
+}
+
+[class^="icon-"] .baseline,
+[class*=" icon-"] .baseline {
+  vertical-align: baseline;
+}
+
+table label {
+  display: block;
+  min-width: 100%;
+  min-height: 100%;
+}

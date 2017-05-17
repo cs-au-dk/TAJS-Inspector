@@ -1,0 +1,143 @@
+<vertical-split-pane [primary-component-initialratio]="0.1"
+                     local-storage-key="line-values">
+  <div class="split-pane-content-primary height-inherit" style="overflow-y: auto">
+    <div class="panel panel-default" style="height: auto">
+      <div class="panel-heading">Visible value kinds</div>
+      <div class="panel-body">
+        <div class="form-group">
+          <div *ngFor="let kind of lineValueKinds">
+            <label for="{{kind.value}}">
+              <input type="checkbox"
+                     id="{{kind.value}}"
+                     value="{{kind.value}}"
+                     (change)="filterValues()"
+                     [(ngModel)]="kind.checked"/>
+              {{kind.name}}
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="panel panel-default" style="height: auto">
+      <div class="panel-heading">Related location</div>
+      <div class="panel-body text-center">
+        <ul class="pagination pagination-sm">
+          <li>
+            <button class="btn btn-default btn-md"
+                    (click)="goRelatedLocation(false)"
+                    [disabled]="filteredNodes.length < 1"
+                    title="Step one line backwards">
+              <span class="glyphicon glyphicon-step-backward"></span>
+            </button>
+          </li>
+          <li>
+            <button class="btn btn-default btn-md"
+                    (click)="goRelatedLocation(true)"
+                    [disabled]="filteredNodes.length < 1"
+                    title="Step one line forwards">
+              <span class="glyphicon glyphicon-step-forward"></span>
+            </button>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="panel panel-default" style="height: auto;">
+      <div class="panel-heading">Context</div>
+      <div class="panel-body">
+        <div class="row">
+          <div class="col-xs-6 form-group">
+            <label for="file-search">Filter by rendering</label>
+            <input type="text" class="form-control" id="file-search" placeholder="Enter a substring"
+                   [(ngModel)]="filterQuery">
+          </div>
+          <div class="col-xs-6">
+            <label for="semantic-filtering">Filter by semantics</label>
+            <input type="text" class="form-control" id="semantic-filtering" placeholder="E.g. isMaybeUndef(prop)"
+                   #semantic
+                   (keyup.enter)="filterContextsSemantically(semantic.value)">
+          </div>
+        </div>
+        <table class="table table-condensed">
+          <tbody>
+          <tr *ngFor="let item of filteredContexts | dataFilter: filterQuery: 'rendering' ; let i = index">
+            <td style="width: 10px"><input type="radio" id="context{{i}}" name="quick-select-context"
+                                           [ngModel]="selectedContext"
+                                           [value]="item"
+                                           (ngModelChange)="selectedContext = $event">
+            </td>
+            <td><label for="context{{i}}">{{item.rendering}}</label></td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="split-pane-content-secondary height-inherit" style="overflow-y: hidden">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        Variable values <span *ngIf="currentLine">(line {{currentLine}}, context {{selectedContext?.rendering}})</span>
+      </div>
+      <div class="panel-body" style="padding: 0">
+        <div class="tree-wrapper">
+          <tree-root [nodes]="filteredNodes" [options]="treeOptions">
+            <ng-template #treeNodeTemplate let-node let-index="index">
+              <span [ngSwitch]="node.data.nodeType">
+                <ng-container *ngSwitchCase="nodeType.Identifier">
+                  <span class="text-primary">{{ node.data.identifier }}</span>
+                  <span class="text-muted">
+                  (ch. {{node.data.location.range.columnStart}} - {{node.data.location.range.columnEnd}})
+                    <span *ngIf="node.data.children.length > 0">= {{'{'}}</span>
+                    <ng-container *ngFor="let child of node.data.children; let i = index">
+                      {{ child.rendering }}<span *ngIf="i !== (node.data.children.length - 1)">,</span>
+                      <span *ngIf="child.id"
+                            class="glyphicon glyphicon-share-alt text-primary baseline"
+                            title="jump to location"
+                            (click)="jumpToAllocation(child.id, node, i)">
+                      </span>
+                    </ng-container>
+                    {{'}'}}
+                  </span>
+                </ng-container>
+                <ng-container *ngSwitchCase="nodeType.DescribedObject">
+                  <span class="text-success">{{ node.data.rendering }}</span>
+                  <span class="text-muted">
+                    ({{node.data.id}})
+                  </span>
+                </ng-container>
+                <ng-container *ngSwitchCase="nodeType.Jump">
+                   <span class="text-primary">
+                     line {{ node.data.range.lineStart }} - {{ node.data.range.lineEnd }}
+                   </span>
+                  <span class="text-muted">({{node.data.id}}, context {{node.data.context.rendering}})</span>
+                  <span class="glyphicon glyphicon-share-alt text-primary baseline"
+                        title="jump to location"
+                        (click)="jumpTo(node.data.fileID, node.data.range.lineStart, node.data.context)">
+                  </span>
+                </ng-container>
+                  <ng-container *ngSwitchCase="nodeType.Property">
+                  <span class="text-primary">{{ node.data.rendering }}</span>
+                    <span *ngIf="node.data.childrenSummary" class="text-muted">
+                    <ng-container *ngFor="let child of node.data.children; let i = index">
+                      {{ child.rendering}}
+                      <span *ngIf="child.id"
+                            class="glyphicon glyphicon-share-alt text-primary baseline"
+                            title="jump to location"
+                            (click)="jumpToAllocation(child.id, node, i)">
+                      </span>
+                    </ng-container>
+                </span>
+                </ng-container>
+                <ng-container *ngSwitchDefault>
+                <span class="text-muted">{{ node.data.rendering }}</span>
+                <span *ngIf="node.data.childrenSummary" class="text-muted">
+                  = {{'{'}}{{node.data.childrenSummary}}{{'}'}}
+                </span>
+              </ng-container>
+              </span>
+            </ng-template>
+          </tree-root>
+        </div>
+      </div>
+    </div>
+  </div>
+</vertical-split-pane>

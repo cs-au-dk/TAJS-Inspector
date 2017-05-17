@@ -1,0 +1,60 @@
+<app-modal #modal>
+  <div class="app-modal-header">
+    <h4>Keyboard shortcuts for code viewer</h4>
+  </div>
+  <div class="app-modal-body">
+    <table class="table table-striped">
+      <thead>
+      <tr>
+        <th class="col-xs-4">
+          Press
+        </th>
+        <th class="col-xs-8">
+          To
+        </th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <th>ALT+G</th>
+        <td>Jump to line.</td>
+      </tr>
+      <tr>
+        <th>CTRL+F</th>
+        <td>Start searching</td>
+      </tr>
+      <tr>
+        <th>CTRL+G</th>
+        <td>Find next</td>
+      </tr>
+      <tr>
+        <th>CTRL+SHIFT+G</th>
+        <td>Find previous</td>
+      </tr>
+      <tr>
+        <th>F11</th>
+        <td>Full screen code viewer (ESC/F11 to exit).</td>
+      </tr>
+      <tr>
+        <th>CTRL+D</th>
+        <td>Fold code at cursor (if possible).</td>
+      </tr>
+      <tr>
+        <th>CTRL+ARROW-DOWN</th>
+        <td>If jump property selected, jump to line with the next-largest property value.</td>
+      </tr>
+      <tr>
+        <th>CTRL+ARROW-UP</th>
+        <td>If jump property selected, jump to the line with the former-largest property value.</td>
+      </tr>
+      <tr>
+        <th>CTRL+M</th>
+        <td>Show call hierarchy for the selected line</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="app-modal-footer">
+    <button type="button" class="btn btn-default" (click)="modal.hide()">Close</button>
+  </div>
+</app-modal>

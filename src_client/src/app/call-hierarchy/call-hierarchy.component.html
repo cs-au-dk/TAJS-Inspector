@@ -1,0 +1,25 @@
+<div class="panel panel-default">
+  <div class="panel-heading">
+    Call hierarchy (l: {{currentPosition?.line + 1}}:{{currentPosition?.ch}})
+  </div>
+  <div class="panel-body" style="padding: 0">
+
+    <i *ngIf="nodes.length === 0">No enclosing function at selected line.</i>
+    <div class="tree-wrapper" *ngIf="nodes.length > 0">
+      <tree-root
+        [nodes]="nodes"
+        [options]="treeOptions">
+        <ng-template #treeNodeTemplate let-node let-index="index">
+          <span class="code">{{resolver.resolve(node.data.range.lineStart)}}</span>
+          <span class="text-muted">
+        @ {{node.data.fileID}}:{{node.data.range.lineStart}}:{{node.data.range.columnStart}}"
+      </span>
+          <span class="glyphicon glyphicon-share-alt text-primary baseline"
+                title="jump to location"
+                (click)="jumpTo(node.data.fileID, node.data.range.lineStart, node.data.context)">
+      </span>
+        </ng-template>
+      </tree-root>
+    </div>
+  </div>
+</div>

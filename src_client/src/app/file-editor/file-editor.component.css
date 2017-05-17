@@ -1,0 +1,93 @@
+#file-viewer {
+  height: 100%;
+}
+
+/* CodeMirror aux */
+.CodeMirror {
+  width: 100% !important;
+  height: 100% !important;
+  font-size: 11px;
+  margin: 0;
+}
+
+.CodeMirror-activeline-gutter {
+  background-color: #E8F2FF;
+}
+
+.CodeMirror-focused .cm-matchhighlight {
+  background-color: rgba(224, 165, 44, 0.5);
+}
+
+.CodeMirror-selection-highlight-scrollbar {
+  background-color: #E0A52C
+}
+
+/* Gutters */
+.landmarks {
+  width: 1.2em;
+}
+
+.message-notices {
+  width: 3px;
+}
+
+.message-notice {
+  display: inline-block;
+  width: 2px;
+  height: 15px;
+  background-color: #D58326;
+}
+
+.center {
+  text-align: center;
+  width: 100%;
+  height: 100%;
+  line-height: 1em;
+}
+
+.colored-gutter {
+  border-radius: 8px;
+  color: black;
+  display: inline-block;
+  font-weight: bold;
+  text-align: center;
+  width: 100%;
+  line-height: 1em;
+}
+
+.issue {
+  border-bottom-width: 2px;
+  text-decoration: none;
+}
+
+.issue.TAJS_ERROR, .issue.TAJS_META {
+  border-color: #ff6de8;
+}
+
+.issue.HIGH {
+  border-color: #ff0000;
+}
+
+.issue.MEDIUM {
+  border-color: #FFD700;
+}
+
+.issue.LOW {
+  border-color: #00ff00;
+}
+
+.issue.CERTAIN {
+  border-bottom-style: solid;
+}
+
+.issue.MAYBE {
+  border-bottom-style: dashed;
+}
+
+.issue.INFO {
+  border-bottom-style: dotted;
+}
+
+.issue.NONE {
+  border-bottom-style: double;
+}

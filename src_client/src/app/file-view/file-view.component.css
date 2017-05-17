@@ -1,0 +1,47 @@
+#file-list * {
+  -webkit-border-radius: 0 !important;
+  -moz-border-radius: 0 !important;
+  border-radius: 0 !important;
+}
+
+#file-list ul {
+  padding: 0;
+}
+
+#file-list li {
+  height: 30px;
+  line-height: 30px;
+  text-indent: 0;
+  display: block;
+  text-decoration: none;
+  color: #535353;
+  padding: 0 15px 0 15px;
+}
+
+#file-list li:hover, #file-list li.selected {
+  text-decoration: none;
+  cursor: pointer;
+  background: #F6F6F6;
+}
+
+#editor {
+  height: 500px;
+  max-height: 100vh;
+}
+
+.component {
+  background-color: #F7F7F7;
+}
+
+.panel, .panel-body {
+  height: inherit;
+}
+
+.panel-heading {
+  min-height: 30px;
+  line-height: 30px;
+  padding: 0 15px 0 15px;
+}
+.panel {
+  margin-bottom: 2px;
+}

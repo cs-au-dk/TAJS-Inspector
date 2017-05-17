@@ -1,0 +1,79 @@
+<horizontal-split-pane [primary-component-initialratio]="0.9"
+                       (on-ended-resizing)="refresh()"
+                       [secondary-component-toggled-off]="!isVisibleLineValues"
+                       [secondary-component-minsize]="100"
+                       [primary-component-minsize]="100"
+                       [local-storage-key]="'lineAnalysis1'">
+  <div class="split-pane-content-primary h-100 component overflow-auto">
+    <div class="hw-100">
+      <vertical-split-pane [primary-component-initialratio]="0.15"
+                           [local-storage-key]="'lineAnalysis2'">
+        <div class="split-pane-content-primary h-100 overflow-auto">
+          <div class="hw-100">
+            <h4>Files</h4>
+            <div class="form-group">
+              <input type="text" class="form-control" id="file-search" placeholder="Search files"
+                     [(ngModel)]="filterQuery">
+            </div>
+            <div id="file-list">
+              <ul class="list-group">
+                <li *ngFor="let file of (files | dataFilter: filterQuery:'name')"
+                    title="{{ file.name }}"
+                    (click)="selectFile(file)"
+                    [class.selected]="file === selectedFile"
+                    class="list-group-item">
+                  <span class="overflow-ellipsis"><span class="glyphicon glyphicon-file"></span> {{ file.name }} ({{file.id}})</span>
+                </li>
+              </ul>
+            </div>
+
+            <h4>Toolbars</h4>
+            <div class="checkbox">
+              <label><input type="checkbox" [(ngModel)]="isVisibleLineValues">Lines values</label>
+            </div>
+            <div class="checkbox">
+              <label><input type="checkbox" [(ngModel)]="isVisibleCallHierarchy">Call hierarchy</label>
+            </div>
+            <button type="button" class="btn btn-default text-center" style="width:100%" (click)="showCallHierarchy()">
+              Show call hierarchy at line
+            </button>
+          </div>
+        </div>
+        <div class="split-pane-content-secondary h-100">
+          <vertical-split-pane [primary-component-initialratio]="0.6"
+                               [local-storage-key]="'lineAnalysis3'">
+            <div class="split-pane-content-primary h-100 overflow-auto " style="padding-right: 5px;">
+              <app-file-editor [selectedFile]="selectedFile"
+                               (editorClick)="drill($event)">
+              </app-file-editor>
+            </div>
+            <div class="split-pane-content-secondary height-inherit" style="overflow: hidden">
+              <vertical-split-pane [primary-component-initialratio]="0.5"
+                                   [local-storage-key]="'lineAnalysis4'"
+                                   [secondary-component-minsize]="100"
+                                   [primary-component-minsize]="100"
+                                   [primary-component-toggled-off]="!isVisibleCallHierarchy">
+                <div class="split-pane-content-primary height-inherit">
+                  <app-call-hierarchy [resolver]="_this"
+                                      (jump)="jumpTo($event, true)"></app-call-hierarchy>
+                </div>
+                <div class="split-pane-content-secondary hw-100">
+                  <h4>Message searching</h4>
+                  <app-file-message-search [selectedFile]="selectedFile" (jump)="jumpTo($event, true)">
+                  </app-file-message-search>
+                  <app-jump [selectedFile]="selectedFile" (jump)="jumpTo($event)">
+                  </app-jump>
+                </div>
+              </vertical-split-pane>
+            </div>
+          </vertical-split-pane>
+        </div>
+      </vertical-split-pane>
+    </div>
+  </div>
+  <div class="split-pane-content-secondary h-100 component overflow-auto">
+    <div class="lower">
+      <app-line-values (jump)="jumpTo($event, true)"></app-line-values>
+    </div>
+  </div>
+</horizontal-split-pane>

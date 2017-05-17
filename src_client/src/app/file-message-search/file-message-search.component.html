@@ -1,0 +1,6 @@
+<div class="input-group">
+  <input type="text" class="form-control" placeholder="Search in messages (Use /re/ syntax for regexp search)" #box
+         (keyup.enter)="search(box.value)">
+  <span class="input-group-addon"><ng-container
+    *ngIf="query">{{ linesMatchingQuery.length }} matches</ng-container></span>
+</div>

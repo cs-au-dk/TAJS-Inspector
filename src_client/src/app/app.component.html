@@ -1,0 +1,20 @@
+<nav class="navbar navbar-default navbar-inverse navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <span class="navbar-brand">TAJS Line Analysis</span>
+    </div>
+    <ul class="nav navbar-nav">
+      <li><a routerLink="/overview" routerLinkActive="active">Overview</a></li>
+      <li><a routerLink="/individualFiles" routerLinkActive="active">Individual files</a></li>
+      <li><a (click)="shortcuts.modal.show()" style="cursor: pointer;">Shortcuts</a></li>
+      <li><a (click)="settings.modal.show()" style="cursor: pointer;">Settings</a></li>
+    </ul>
+  </div>
+</nav>
+<app-shortcut-modal #shortcuts></app-shortcut-modal>
+<app-settings-modal #settings></app-settings-modal>
+<div class="content">
+  <router-outlet></router-outlet>
+</div>
+<ng2-toasty></ng2-toasty>
+

@@ -1,0 +1,22 @@
+.controls {
+  height: 18px;
+}
+
+.dropdown-toggle {
+  width: 95%;
+  height: 35px;
+  white-space: nowrap;
+  overflow: hidden !important;
+  text-overflow: ellipsis;
+}
+
+.list-group-item {
+  padding: 5px 10px 5px 10px;
+}
+
+
+* {
+  -webkit-border-radius: 0 !important;
+  -moz-border-radius: 0 !important;
+  border-radius: 0 !important;
+}

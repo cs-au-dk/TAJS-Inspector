@@ -1,0 +1,8 @@
+.modal {
+  background: rgba(0,0,0,0.6);
+}
+
+.modal-body{
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
+}
