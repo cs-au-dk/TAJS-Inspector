@@ -1,4 +1,4 @@
-// Generated using typescript-generator version 1.19.294 on 2017-05-18 08:36:53.
+// Generated using typescript-generator version 1.19.294 on 2017-05-18 11:37:24.
 
 interface Gutter<T> {
     kind: GutterKind;
@@ -21,23 +21,6 @@ interface LocationID extends String {
 }
 
 interface ObjectID extends String {
-}
-
-interface LineData {
-    stateSizes: LineMap<number>;
-    messages: LineMap<LineMessage[]>;
-    allocationCounts: LineMap<number>;
-    blockVisitCounts: LineMap<number>;
-    normalizedBlockVisitCounts: LineMap<number>;
-    durations: LineMap<number>;
-    normalizedDurations: LineMap<number>;
-    contextCounts: LineMap<number>;
-    calls_in: LineMap<number>;
-    calls_out: LineMap<number>;
-    maxSuspiciousness: LineMap<number>;
-    fullUnknownValueResolve: LineMap<number>;
-    partialUnknownValueResolve: LineMap<number>;
-    maxRecoveryGraphSize: LineMap<number>;
 }
 
 interface LineMap<T> {

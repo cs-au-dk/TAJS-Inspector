@@ -18,16 +18,6 @@ export class ApiService {
       .catch(this.handleError);
   }
 
-  getLineData(fileID: FileID): Promise<LineData> {
-    let params = new URLSearchParams();
-    params.set('fileID', fileID.toString());
-
-    return this.http.get(this.apiUrl + '/lines', {search: params})
-      .toPromise()
-      .then((response: any) => response.json())
-      .catch(this.handleError);
-  }
-
   getGutters(fileID: FileID): Promise<Gutter<any>[]> {
     let params = new URLSearchParams();
     params.set('fileID', fileID.toString());

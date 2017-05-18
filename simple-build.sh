@@ -35,7 +35,7 @@ javac -cp $(find $DIR/lib -name "*.jar" | tr "\n" ":") -d $JAVABUILD $(find $DIR
 #
 ./gradlew generateTypeScript
 pushd $DIR/src_client
-cd npm install
+npm install
 node_modules/@angular/cli/bin/ng build --prod --aot --output-path $JSBUILD/dk/brics/inspector/client/standard-js-client
 popd
 
