@@ -1,0 +1,41 @@
+apply plugin: 'java'
+apply plugin: 'cz.habarta.typescript-generator'
+
+repositories {
+    mavenCentral()
+}
+dependencies {
+    compile group: 'com.fasterxml.jackson.jaxrs', name: 'jackson-jaxrs-json-provider', version: '2.6.3'
+    compile fileTree(dir: 'lib', include: ['*.jar'])
+
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src'
+        }
+    }
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath group: 'cz.habarta.typescript-generator', name: 'typescript-generator-gradle-plugin', version: '1.19.294'
+    }
+}
+
+generateTypeScript {
+    outputFile = 'src_client/src/app/api.d.ts'
+    classPatterns = [
+            'dk.brics.inspector.api.model.**'
+    ]
+    customTypeMappings = [
+            'dk.brics.inspector.api.model.ids.AbstractID:String',
+            'java.nio.file.Path:string'
+    ]
+    jsonLibrary = 'jackson2'
+    outputKind = 'global'
+}

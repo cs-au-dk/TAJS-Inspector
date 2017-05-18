@@ -1,4 +1,4 @@
-// Generated using typescript-generator version 1.19.294 on 2017-05-05 13:12:00.
+// Generated using typescript-generator version 1.19.294 on 2017-05-18 08:36:53.
 
 interface Gutter<T> {
     kind: GutterKind;
@@ -47,8 +47,8 @@ interface LineMap<T> {
 interface LineMessage {
     sourceRange: SourceRange;
     message: string;
-    severity: Severity;
-    status: Status;
+    severity: MessageSeverity;
+    status: MessageStatus;
 }
 
 interface LineValue {
@@ -92,11 +92,14 @@ interface SourceRange {
 
 interface BoxedExperimentalOption {
     kind: string;
-    value: ExperimentalOption;
+    value: string;
+}
+
+interface BoxedOptionValues {
 }
 
 interface OptionData {
-    options: OptionValues;
+    options: BoxedOptionValues;
     experimentalOptions: BoxedExperimentalOption[];
 }
 
@@ -106,7 +109,7 @@ interface CompositeValue {
 
 interface DescribedObject extends SingleValue {
     rendering: string;
-    kind: Kind;
+    kind: ObjectKind;
     id: ObjectID;
 }
 
@@ -125,125 +128,14 @@ interface DescribedProperties {
 interface SingleValue {
 }
 
-interface ExperimentalOption {
-}
-
-interface OptionValues {
-    noPostInitializationEvents: boolean;
-    unsoundness: UnsoundnessOptionValues;
-    propagateDeadFlow: boolean;
-    evalStatistics: boolean;
-    loopUnrollings: number;
-    config: string;
-    arguments: string[];
-    soundnessTesterOptions: SoundnessTesterOptions;
-    debugOrTestEnabled: boolean;
-    optionValues: { [index: string]: any };
-    libraries: string[];
-    alwaysCanPut: boolean;
-    callGraphEnabled: boolean;
-    chargedCallsDisabled: boolean;
-    showVariableInfoEnabled: boolean;
-    contextSensitiveHeapEnabled: boolean;
-    contextSpecializationEnabled: boolean;
-    controlSensitivityDisabled: boolean;
-    copyOnWriteDisabled: boolean;
-    coverageEnabled: boolean;
-    domenabled: boolean;
-    exceptionsDisabled: boolean;
-    flowGraphEnabled: boolean;
-    forInSpecializationDisabled: boolean;
-    gcdisabled: boolean;
-    hybridCollectionsDisabled: boolean;
-    ignoreHTMLContent: boolean;
-    ignoreLibrariesEnabled: boolean;
-    intermediateStatesEnabled: boolean;
-    lazyDisabled: boolean;
-    lowSeverityEnabled: boolean;
-    loopUnrollingEnabled: boolean;
-    memoryMeasurementEnabled: boolean;
-    modifiedDisabled: boolean;
-    newFlowEnabled: boolean;
-    noMessages: boolean;
-    objectSensitivityDisabled: boolean;
-    determinacyEnabled: boolean;
-    parameterSensitivityEnabled: boolean;
-    polymorphicDisabled: boolean;
-    recencyDisabled: boolean;
-    returnJSON: boolean;
-    singleEventHandlerType: boolean;
-    statisticsEnabled: boolean;
-    testEnabled: boolean;
-    testFlowGraphBuilderEnabled: boolean;
-    timingEnabled: boolean;
-    unevalizerEnabled: boolean;
-    ignoreUnreachableEnabled: boolean;
-    concreteNativeDisabled: boolean;
-    polyfillMDNEnabled: boolean;
-    polyfillES6CollectionsEnabled: boolean;
-    polyfillTypedArraysEnabled: boolean;
-    asyncEventsEnabled: boolean;
-    internalValueSplittingDisabled: boolean;
-    noComplementStringsEnabled: boolean;
-    showInternalMessagesEnabled: boolean;
-    consoleModelEnabled: boolean;
-    commonAsyncPolyfillEnabled: boolean;
-    noStrictEnabled: boolean;
-    noNewAssumesEnabled: boolean;
-    oldAssumesEnabled: boolean;
-    noSpecialStringsEnabled: boolean;
-    postInitializationEventsDisabled: boolean;
-    noCanonicalizeModifiedEnabled: boolean;
-    deterministicCollectionsEnabled: boolean;
-    specializeAllBoxedPrimitivesEnabled: boolean;
-    quietEnabled: boolean;
-    debugEnabled: boolean;
-}
-
-interface UnsoundnessOptionValues {
-    noImplicitGlobalVarDeclarations: boolean;
-    ignoreStringSearchCallback: boolean;
-    ignoreMissingNativeModels: boolean;
-    usePreciseFunctionToString: boolean;
-    ignoreImpreciseEvals: boolean;
-    ignoreAsyncEvals: boolean;
-    useOrderedObjectKeys: boolean;
-    ignoreLocale: boolean;
-    warnAboutAllStringCoercions: boolean;
-    ignoreImpreciseFunctionConstructor: boolean;
-    useDeterministicNondeterminism: boolean;
-    ignoreUnlikelyPropertyReads: boolean;
-    showUnsoundnessUsage: boolean;
-    ignoreSomePrototypesDuringDynamicPropertyReads: boolean;
-}
-
-interface SoundnessTesterOptions {
-    test: boolean;
-    generate: boolean;
-    regenerate: boolean;
-    rootDirFromMainDirectory: string;
-    explicitSoundnessLogFile: string;
-    nonInteractive: boolean;
-    generatorEnvironmentExplicitly: Environment;
-    timeLimitExplicitly: number;
-    instrumentationTimeLimitExplicitly: number;
-    onlyIncludesForInstrumentation: string[];
-    ignoreShaDifference: boolean;
-    useUncompressedLogFileForInference: boolean;
-    printErrorsWithoutThrowingException: boolean;
-    forceUpdateSha: boolean;
-}
-
 type GutterKind = "NUMBER" | "STRING";
 
 type LineValueKind = "UNKNOWN" | "VARIABLE" | "REGISTER" | "FIXED_PROPERTY" | "DYNAMIC_PROPERTY";
 
 type RelatedLocationKind = "NODE" | "BLOCK" | "LINE";
 
-type Severity = "TAJS_ERROR" | "HIGH" | "MEDIUM_IF_CERTAIN_NONE_OTHERWISE" | "MEDIUM" | "LOW" | "TAJS_META" | "TAJS_UNSOUNDNESS";
+type MessageSeverity = "TAJS_ERROR" | "HIGH" | "MEDIUM_IF_CERTAIN_NONE_OTHERWISE" | "MEDIUM" | "LOW" | "TAJS_META" | "TAJS_UNSOUNDNESS";
 
-type Status = "CERTAIN" | "MAYBE" | "INFO" | "NONE";
+type MessageStatus = "CERTAIN" | "MAYBE" | "INFO" | "NONE";
 
-type Kind = "OBJECT" | "FUNCTION" | "ARRAY" | "REGEXP" | "DATE" | "STRING" | "NUMBER" | "BOOLEAN" | "ERROR" | "MATH" | "ACTIVATION" | "ARGUMENTS";
-
-type Environment = "NODE" | "NODE_GLOBAL" | "NASHORN" | "BROWSER" | "DRIVEN_BROWSER";
+type ObjectKind = "OBJECT" | "FUNCTION" | "ARRAY" | "STRING" | "BOOLEAN" | "NUMBER" | "REGEXP" | "DATE" | "ERROR" | "MATH" | "ACTIVATION" | "ARGUMENTS";
