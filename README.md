@@ -38,3 +38,4 @@ TODO
   - Most enums
   - Options
   - Object structure (DescribedProperties)`
+- CI testing
