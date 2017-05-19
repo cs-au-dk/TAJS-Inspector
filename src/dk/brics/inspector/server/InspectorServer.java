@@ -63,7 +63,7 @@ public class InspectorServer {
         return gsonBuilder.create();
     }
 
-    public Server startServer() {
+    public RunningServer startServer() {
         int port = TESTING ? 12345 : 0;
         Server server = new Server(port);
         server.setStopAtShutdown(true);
@@ -105,7 +105,7 @@ public class InspectorServer {
         URI uri = server.getURI();
         log.info(String.format("Started server at %s", uri));
 
-        return server;
+        return new RunningServer(server);
     }
 
     private void forceRestartServer(Server server, int port) {
@@ -314,6 +314,23 @@ public class InspectorServer {
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
+        }
+    }
+
+    public static class RunningServer {
+
+        private final Server server;
+
+        public RunningServer(Server server) {
+            this.server = server;
+        }
+
+        public URI getURI() {
+            return server.getURI();
+        }
+
+        public void join() throws InterruptedException {
+            server.join();
         }
     }
 }
