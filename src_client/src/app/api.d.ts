@@ -1,4 +1,4 @@
-// Generated using typescript-generator version 1.19.294 on 2017-05-18 11:37:24.
+// Generated using typescript-generator version 1.19.294 on 2017-05-19 08:33:07.
 
 interface Gutter<T> {
     kind: GutterKind;
