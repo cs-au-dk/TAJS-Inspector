@@ -8,31 +8,30 @@ import {
   Output,
   ViewChild,
   ViewEncapsulation
-} from "@angular/core";
-import "codemirror/mode/javascript/javascript";
-import "codemirror/addon/selection/active-line";
-import "codemirror/addon/edit/matchbrackets";
-import "codemirror/addon/search/search";
-import "codemirror/addon/search/searchcursor";
-import "codemirror/addon/search/match-highlighter";
-import "codemirror/addon/search/jump-to-line";
-import "codemirror/addon/dialog/dialog";
-import "codemirror/addon/fold/foldcode";
-import "codemirror/addon/fold/foldgutter";
-import "codemirror/addon/fold/brace-fold";
-import "codemirror/addon/fold/indent-fold";
-import "codemirror/addon/fold/comment-fold";
-import "codemirror/addon/display/fullscreen";
-import {CodeMirrorComponent} from "../code-mirror/code-mirror.component";
-import {Landmark} from "../landmark";
-import {CodeService} from "../code.service";
-import {ElementBuilder} from "../element-builder";
-import {BookmarkService} from "../bookmark.service";
-import {SettingsService} from "../settings.service";
-import {Dictionary} from "../dictionary";
-import {Utility} from "../utility";
-import * as CodeMirror from "codemirror";
-import LineWidget = CodeMirror.LineWidget;
+} from '@angular/core';
+import 'codemirror/mode/javascript/javascript';
+import 'codemirror/addon/selection/active-line';
+import 'codemirror/addon/edit/matchbrackets';
+import 'codemirror/addon/search/search';
+import 'codemirror/addon/search/searchcursor';
+import 'codemirror/addon/search/match-highlighter';
+import 'codemirror/addon/search/jump-to-line';
+import 'codemirror/addon/dialog/dialog';
+import 'codemirror/addon/fold/foldcode';
+import 'codemirror/addon/fold/foldgutter';
+import 'codemirror/addon/fold/brace-fold';
+import 'codemirror/addon/fold/indent-fold';
+import 'codemirror/addon/fold/comment-fold';
+import 'codemirror/addon/display/fullscreen';
+import {CodeMirrorComponent} from '../code-mirror/code-mirror.component';
+import {Landmark} from '../landmark';
+import {CodeService} from '../code.service';
+import {ElementBuilder} from '../element-builder';
+import {BookmarkService} from '../bookmark.service';
+import {SettingsService} from '../settings.service';
+import {Dictionary} from '../dictionary';
+import {Utility} from '../utility';
+import * as CodeMirror from 'codemirror';
 
 @Component({
   selector: 'app-file-editor',
@@ -49,22 +48,24 @@ import LineWidget = CodeMirror.LineWidget;
 })
 export class FileEditorComponent implements AfterViewInit, OnInit {
   @ViewChild('cm') cm: CodeMirrorComponent;
-  @Input() selectedFile: FileDescription = {id: '', name: '', content: ''};
+  @Input() selectedFile: FileDescription = <FileDescription>{id: '', name: '', content: ''};
   @Output() editorClick: EventEmitter<CodeMirror.Position> = new EventEmitter();
   codeMirrorConfig = {
     lineNumbers: true,
-    mode: "javascript",
-    theme: "xq-light",
+    mode: 'javascript',
+    theme: 'xq-light',
     styleActiveLine: true,
     matchBrackets: true,
     highlightSelectionMatches: {showToken: /\w/, annotateScrollbar: true},
     foldGutter: true,
     extraKeys: {
-      "Alt-F": "findPersistent",
-      "Ctrl-D": cm => cm.foldCode(cm.getCursor()),
-      "F11": cm => cm.setOption("fullScreen", !cm.getOption("fullScreen")),
-      "Esc": cm => {
-        if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false)
+      'Alt-F': 'findPersistent',
+      'Ctrl-D': cm => cm.foldCode(cm.getCursor()),
+      'F11': cm => cm.setOption('fullScreen', !cm.getOption('fullScreen')),
+      'Esc': cm => {
+        if (cm.getOption('fullScreen')) {
+          cm.setOption('fullScreen', false)
+        }
       }
     },
     readOnly: true,
@@ -84,10 +85,12 @@ export class FileEditorComponent implements AfterViewInit, OnInit {
 
   ngAfterViewInit() {
     this.cm.instance.on('gutterClick', (cm, line, gutter) => {
-      if (gutter === 'CodeMirror-foldgutter') return;
+      if (gutter === 'CodeMirror-foldgutter') {
+        return;
+      }
 
-      let info = cm.lineInfo(line);
-      let landmark = new Landmark(this.selectedFile.id, line + 1, info.text);
+      const info = cm.lineInfo(line);
+      const landmark = new Landmark(this.selectedFile.id, line + 1, info.text);
       if (!info.gutterMarkers || !info.gutterMarkers.landmarks) {
         this.bookmarkService.addBookmark(landmark);
         cm.setGutterMarker(line, 'landmarks', ElementBuilder.landmark());
@@ -101,30 +104,32 @@ export class FileEditorComponent implements AfterViewInit, OnInit {
   }
 
   updateGutter() {
-    let promises = [];
+    const promises = [];
     let gutters: Gutter<any>[];
     let sortedLineData: Dictionary<[{ fileID: string, line: number, value: number }]>;
     promises.push(this.codeService.getGutters(this.selectedFile.id).then((l: Gutter<any>[]) => gutters = l));
     promises.push(this.codeService.getSortedLineData().then((m: Dictionary<any>) => sortedLineData = m));
 
     Promise.all(promises).then(() => {
-      let visibleGutters = this.settingsService.getVisibleGutters();
-      this.cm.instance.setOption("gutters", visibleGutters.map(g => Utility.getGutterID(g)).concat(this.codeMirrorConfig.gutters));
+      const visibleGutters = this.settingsService.getVisibleGutters();
+      this.cm.instance.setOption('gutters', visibleGutters.map(g => Utility.getGutterID(g)).concat(this.codeMirrorConfig.gutters));
 
       // Gutters
-      for (let gutter of gutters) {
-        if (!visibleGutters.some(g => g === gutter.name)) continue;
-        let id = Utility.getGutterID(gutter.name);
-        let max = sortedLineData[gutter.name][0].value;
+      for (const gutter of gutters) {
+        if (!visibleGutters.some(g => g === gutter.name)) {
+          continue;
+        }
+        const id = Utility.getGutterID(gutter.name);
+        const max = sortedLineData[gutter.name][0].value;
 
         switch (gutter.kind) {
-          case "NUMBER":
+          case 'NUMBER':
             this.insertGutterMakers(gutter.data.data, id, (line, value) =>
               ElementBuilder.numberGutter(value, gutter.description, max));
             break;
-          case "STRING":
+          case 'STRING':
             this.insertGutterMakers(gutter.data.data, id, (line, value) => {
-              let elem = <HTMLElement>document.createElement('span');
+              const elem = <HTMLElement>document.createElement('span');
               elem.className = 'overflow-ellipsis';
               elem.innerHTML = value.map(msg => msg.message).join(', ');
               elem.title = value.map(msg => msg.message).join('\n');
@@ -137,9 +142,9 @@ export class FileEditorComponent implements AfterViewInit, OnInit {
       }
 
       // Message highlight
-      let messages = gutters.find(g => g.name === "Messages");
+      const messages = gutters.find(g => g.name === 'Messages');
       if (messages) {
-        this.insertGutterMakers(messages.data.data, "message-notices", (line, value) => {
+        this.insertGutterMakers(messages.data.data, 'message-notices', (line, value) => {
           this.markIssue(value);
           return ElementBuilder.message(messages.description);
         });
@@ -161,12 +166,12 @@ export class FileEditorComponent implements AfterViewInit, OnInit {
   }
 
   private markIssue(messages: LineMessage[]) {
-    for (let m of messages) {
-      let lineStart = m.sourceRange.lineStart - 1;
-      let chStart = m.sourceRange.columnStart;
-      let className = `issue ${m.severity} ${m.status}`;
+    for (const m of messages) {
+      const lineStart = m.sourceRange.lineStart - 1;
+      const chStart = m.sourceRange.columnStart;
+      const className = `issue ${m.severity} ${m.status}`;
 
-      let token = this.cm.instance.getTokenAt({line: lineStart, ch: chStart});
+      const token = this.cm.instance.getTokenAt({line: lineStart, ch: chStart});
       this.cm.instance.markText(
         {line: lineStart, ch: chStart - 1}, // start draw
         {line: lineStart, ch: chStart + token.string.length - 1}, // end draw
@@ -176,7 +181,7 @@ export class FileEditorComponent implements AfterViewInit, OnInit {
   }
 
   private generateGutterCSSClasses(gutters: Gutter<any>[]): void {
-    let style = document.createElement('style');
+    const style = document.createElement('style');
     gutters.forEach(gutter => {
       style.innerHTML += `.${Utility.getGutterID(gutter.name)} { width: ${this.getGutterWidth(gutter.kind)}em; }`
     });
@@ -186,14 +191,18 @@ export class FileEditorComponent implements AfterViewInit, OnInit {
   private insertGutterMakers(lineMap: any, gutterClass: string, nodeGenerator: (lineNo, value) => HTMLElement) {
     this.cm.instance.clearGutter(gutterClass);
     Object.keys(lineMap).forEach(lineNo => {
-      let elem = nodeGenerator(lineNo, lineMap[lineNo]);
+      const elem = nodeGenerator(lineNo, lineMap[lineNo]);
       this.cm.instance.setGutterMarker((+lineNo) - 1, gutterClass, elem);
     })
   }
 
   private getGutterWidth(kind: GutterKind): number {
-    if (kind === "STRING") return 30;
-    if (kind === "NUMBER") return 4;
+    if (kind === 'STRING') {
+      return 30;
+    }
+    if (kind === 'NUMBER') {
+      return 4;
+    }
   }
 
   @HostListener('window:keydown', ['$event'])
