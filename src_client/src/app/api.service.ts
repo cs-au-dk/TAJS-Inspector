@@ -1,14 +1,12 @@
 import {Injectable} from '@angular/core';
 import {Http, URLSearchParams} from '@angular/http';
 import {environment} from '../environments/environment';
-import {ToastyService} from 'ng2-toasty';
 
 @Injectable()
 export class ApiService {
   apiUrl = environment.apiUrl;
 
-  constructor(private http: Http,
-              private toastyService: ToastyService) {
+  constructor(private http: Http) {
   }
 
   getOptionData(): Promise<OptionData> {
