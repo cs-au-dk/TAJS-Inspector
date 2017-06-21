@@ -18,7 +18,7 @@
             <div id="file-list">
               <ul class="list-group">
                 <li *ngFor="let file of (files | dataFilter: filterQuery:'name')"
-                    title="{{ file.name }}"
+                    title="{{ file.name }} ({{file.id}})"
                     (click)="selectFile(file)"
                     [class.selected]="file === selectedFile"
                     class="list-group-item">
@@ -34,7 +34,7 @@
             <div class="checkbox">
               <label><input type="checkbox" [(ngModel)]="isVisibleCallHierarchy">Call hierarchy</label>
             </div>
-            <button type="button" class="btn btn-default text-center" style="width:100%" (click)="showCallHierarchy()">
+            <button type="button" class="btn btn-default text-center overflow-ellipsis" style="width:100%" (click)="showCallHierarchy()">
               Show call hierarchy at line
             </button>
           </div>
@@ -57,7 +57,7 @@
                   <app-call-hierarchy [resolver]="_this"
                                       (jump)="jumpTo($event, true)"></app-call-hierarchy>
                 </div>
-                <div class="split-pane-content-secondary hw-100">
+                <div class="split-pane-content-secondary hw-100 overflow-auto">
                   <h4>Message searching</h4>
                   <app-file-message-search [selectedFile]="selectedFile" (jump)="jumpTo($event, true)">
                   </app-file-message-search>

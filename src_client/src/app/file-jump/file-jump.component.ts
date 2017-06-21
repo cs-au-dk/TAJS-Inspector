@@ -71,6 +71,8 @@ export class FileJumpComponent implements OnInit {
   }
 
   doJump(landmark?: Landmark) {
+    if (!this.jumpGutter) return;
+
     let destination = (landmark) ? landmark : new Landmark(
       this.sortedLines[this.jumpGutter][this.jumpIndex].fileID
       , this.sortedLines[this.jumpGutter][this.jumpIndex].line

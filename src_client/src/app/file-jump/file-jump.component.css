@@ -1,13 +1,14 @@
-.controls {
-  height: 18px;
-}
-
 .dropdown-toggle {
-  width: 95%;
-  height: 35px;
   white-space: nowrap;
   overflow: hidden !important;
   text-overflow: ellipsis;
+}
+
+.btn-group, .btn {
+  height: 39px;
+}
+.controls {
+  height: 20px;
 }
 
 .list-group-item {

@@ -19,14 +19,14 @@
       </div>
     </div>
     <div class="panel panel-default" style="height: auto">
-      <div class="panel-heading">Related location</div>
+      <div class="panel-heading">Related location (beta)</div>
       <div class="panel-body text-center">
         <ul class="pagination pagination-sm">
           <li>
             <button class="btn btn-default btn-md"
                     (click)="goRelatedLocation(false)"
                     [disabled]="filteredNodes.length < 1"
-                    title="Step one line backwards">
+                    title="Step one executional line backwards">
               <span class="glyphicon glyphicon-step-backward"></span>
             </button>
           </li>
@@ -34,7 +34,7 @@
             <button class="btn btn-default btn-md"
                     (click)="goRelatedLocation(true)"
                     [disabled]="filteredNodes.length < 1"
-                    title="Step one line forwards">
+                    title="Step one executional line forwards">
               <span class="glyphicon glyphicon-step-forward"></span>
             </button>
           </li>
