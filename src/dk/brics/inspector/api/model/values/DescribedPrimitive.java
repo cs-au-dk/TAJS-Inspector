@@ -1,5 +1,9 @@
 package dk.brics.inspector.api.model.values;
 
+
+/**
+ * Description of a primitive value in the analysis.
+ */
 public class DescribedPrimitive implements SingleValue {
 
     public final String rendering;

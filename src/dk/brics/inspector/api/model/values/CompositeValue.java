@@ -2,9 +2,16 @@ package dk.brics.inspector.api.model.values;
 
 import java.util.Set;
 
+/**
+ * Value consisting of multiple sub-values.
+ */
 public class CompositeValue {
 
     public final Set<SingleValue> values;
+
+    public CompositeValue(Set<SingleValue> values) {
+        this.values = values;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -19,9 +26,5 @@ public class CompositeValue {
     @Override
     public int hashCode() {
         return values != null ? values.hashCode() : 0;
-    }
-
-    public CompositeValue(Set<SingleValue> values) {
-        this.values = values;
     }
 }

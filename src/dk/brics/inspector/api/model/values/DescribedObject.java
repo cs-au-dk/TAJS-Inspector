@@ -2,6 +2,9 @@ package dk.brics.inspector.api.model.values;
 
 import dk.brics.inspector.api.model.ids.ObjectID;
 
+/**
+ * Description of an object value in the analysis.
+ */
 public class DescribedObject implements SingleValue {
 
     public final String rendering;

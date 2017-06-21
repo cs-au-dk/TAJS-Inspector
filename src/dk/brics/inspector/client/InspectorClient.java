@@ -4,6 +4,9 @@ import org.eclipse.jetty.util.resource.Resource;
 
 import java.net.URL;
 
+/**
+ * Client side implementation. Simply points to a directory containing the client side implementation.
+ */
 public class InspectorClient {
 
     private String resourceName;

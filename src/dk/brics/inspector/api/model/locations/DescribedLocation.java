@@ -3,6 +3,9 @@ package dk.brics.inspector.api.model.locations;
 import dk.brics.inspector.api.model.ids.LocationID;
 import dk.brics.inspector.api.model.ids.FileID;
 
+/**
+ * Base class for locations.
+ */
 public abstract class DescribedLocation {
 
     public final FileID fileID;

@@ -2,6 +2,10 @@ package dk.brics.inspector.api.model.options;
 
 import java.util.Set;
 
+/**
+ * Configuration options of an analysis.
+ * // TODO support simpler, less TAJS-specific abstraction: 'Map<String, String>'
+ */
 public class OptionData {
 
     public final BoxedOptionValues options;

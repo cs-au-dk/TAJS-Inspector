@@ -2,6 +2,9 @@ package dk.brics.inspector.api.model.locations;
 
 import dk.brics.inspector.api.model.ids.ContextID;
 
+/**
+ * Abstract context.
+ */
 public class DescribedContext {
 
     public final ContextID id;

@@ -34,6 +34,9 @@ import java.nio.file.Path;
 import java.util.Optional;
 import java.util.function.Function;
 
+/**
+ * Servlet-based server. Exposes {@link InspectorAPI} on "/api/approximate-method-name".
+ */
 public class InspectorServer {
 
     private static final Logger log = Logger.getLogger(InspectorServer.class);
@@ -46,6 +49,12 @@ public class InspectorServer {
 
     private final Gson gson;
 
+    /**
+     * Constructor for a server that is ready to be started ({@link #startServer()}).
+     *
+     * @param api    implementation of {@link InspectorAPI}.
+     * @param client implementation of the client side that interacts with this server.
+     */
     public InspectorServer(InspectorAPI api, InspectorClient client) {
         this.api = api;
         this.client = client;
@@ -63,6 +72,9 @@ public class InspectorServer {
         return gsonBuilder.create();
     }
 
+    /**
+     * Starts the server.
+     */
     public RunningServer startServer() {
         int port = TESTING ? 12345 : 0;
         Server server = new Server(port);
@@ -185,6 +197,23 @@ public class InspectorServer {
         @Override
         public void write(JsonWriter jsonWriter, T id) throws IOException {
             jsonWriter.value(AbstractID.serialize(id));
+        }
+    }
+
+    public static class RunningServer {
+
+        private final Server server;
+
+        public RunningServer(Server server) {
+            this.server = server;
+        }
+
+        public URI getURI() {
+            return server.getURI();
+        }
+
+        public void join() throws InterruptedException {
+            server.join();
         }
     }
 
@@ -314,23 +343,6 @@ public class InspectorServer {
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
-        }
-    }
-
-    public static class RunningServer {
-
-        private final Server server;
-
-        public RunningServer(Server server) {
-            this.server = server;
-        }
-
-        public URI getURI() {
-            return server.getURI();
-        }
-
-        public void join() throws InterruptedException {
-            server.join();
         }
     }
 }

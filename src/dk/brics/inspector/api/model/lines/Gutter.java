@@ -1,7 +1,8 @@
-package dk.brics.inspector.api.model;
+package dk.brics.inspector.api.model.lines;
 
-import dk.brics.inspector.api.model.lines.LineMap;
-
+/**
+ * Information to be displayed next to each line of source code.
+ */
 public class Gutter<T> {
 
     public final GutterKind kind;
@@ -11,6 +12,13 @@ public class Gutter<T> {
     public final String description;
 
     public final LineMap<T> data;
+
+    public Gutter(GutterKind kind, String name, String description, LineMap<T> data) {
+        this.kind = kind; // TODO enforce type consistency
+        this.name = name;
+        this.description = description;
+        this.data = data;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -32,12 +40,5 @@ public class Gutter<T> {
         result = 31 * result + (description != null ? description.hashCode() : 0);
         result = 31 * result + (data != null ? data.hashCode() : 0);
         return result;
-    }
-
-    public Gutter(GutterKind kind, String name, String description, LineMap<T> data) {
-        this.kind = kind; // TODO enforce type consistency
-        this.name = name;
-        this.description = description;
-        this.data = data;
     }
 }

@@ -1,5 +1,8 @@
 package dk.brics.inspector.api.model.locations;
 
+/**
+ * Range within a source file.
+ */
 public class SourceRange {
 
     public final int columnStart;

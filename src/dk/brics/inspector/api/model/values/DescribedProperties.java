@@ -2,6 +2,10 @@ package dk.brics.inspector.api.model.values;
 
 import java.util.Map;
 
+/**
+ * Description of the properties of object in the analysis.
+ * TODO make less TAJS/JavaScript-specific structure.
+ */
 public class DescribedProperties {
 
     public final CompositeValue prototype;
@@ -13,6 +17,14 @@ public class DescribedProperties {
     public final CompositeValue nonArray;
 
     public final Map<String, CompositeValue> properties;
+
+    public DescribedProperties(CompositeValue prototype, CompositeValue internal, CompositeValue array, CompositeValue nonArray, Map<String, CompositeValue> properties) {
+        this.prototype = prototype;
+        this.internal = internal;
+        this.array = array;
+        this.nonArray = nonArray;
+        this.properties = properties;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -36,13 +48,5 @@ public class DescribedProperties {
         result = 31 * result + (nonArray != null ? nonArray.hashCode() : 0);
         result = 31 * result + (properties != null ? properties.hashCode() : 0);
         return result;
-    }
-
-    public DescribedProperties(CompositeValue prototype, CompositeValue internal, CompositeValue array, CompositeValue nonArray, Map<String, CompositeValue> properties) {
-        this.prototype = prototype;
-        this.internal = internal;
-        this.array = array;
-        this.nonArray = nonArray;
-        this.properties = properties;
     }
 }

@@ -1,5 +1,8 @@
-package dk.brics.inspector.api.model;
+package dk.brics.inspector.api.model.lines;
 
+/**
+ * Different kinds of {@link LineValue}.
+ */
 public enum LineValueKind {
     UNKNOWN,
     VARIABLE,

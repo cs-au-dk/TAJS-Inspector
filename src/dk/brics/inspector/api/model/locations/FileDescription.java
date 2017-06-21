@@ -2,6 +2,9 @@ package dk.brics.inspector.api.model.locations;
 
 import dk.brics.inspector.api.model.ids.FileID;
 
+/**
+ * Description of a file.
+ */
 public class FileDescription {
 
     public final FileID id;

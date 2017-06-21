@@ -1,11 +1,4 @@
-// Generated using typescript-generator version 1.19.294 on 2017-05-19 08:33:07.
-
-interface Gutter<T> {
-    kind: GutterKind;
-    name: string;
-    description: string;
-    data: LineMap<T>;
-}
+// Generated using typescript-generator version 1.19.294 on 2017-06-21 11:09:13.
 
 interface Optional<T> {
     value: T;
@@ -21,6 +14,13 @@ interface LocationID extends String {
 }
 
 interface ObjectID extends String {
+}
+
+interface Gutter<T> {
+    kind: GutterKind;
+    name: string;
+    description: string;
+    data: LineMap<T>;
 }
 
 interface LineMap<T> {
@@ -111,11 +111,11 @@ interface DescribedProperties {
 interface SingleValue {
 }
 
+type RelatedLocationKind = "NODE" | "BLOCK" | "LINE";
+
 type GutterKind = "NUMBER" | "STRING";
 
 type LineValueKind = "UNKNOWN" | "VARIABLE" | "REGISTER" | "FIXED_PROPERTY" | "DYNAMIC_PROPERTY";
-
-type RelatedLocationKind = "NODE" | "BLOCK" | "LINE";
 
 type MessageSeverity = "TAJS_ERROR" | "HIGH" | "MEDIUM_IF_CERTAIN_NONE_OTHERWISE" | "MEDIUM" | "LOW" | "TAJS_META" | "TAJS_UNSOUNDNESS";
 

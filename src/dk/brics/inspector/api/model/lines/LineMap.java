@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Map where each entry corresponds to a line in the source code.
+ */
 public class LineMap<T> {
 
     public final Map<Integer, T> data;

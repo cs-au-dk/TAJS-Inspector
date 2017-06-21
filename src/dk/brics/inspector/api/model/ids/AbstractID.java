@@ -1,5 +1,8 @@
 package dk.brics.inspector.api.model.ids;
 
+/**
+ * Base class for ids. Supports simple naming scheme to facilitate easy client-debugging, the chosen naming scheme has no semantic consequence as long as different ids are unique when serialized.
+ */
 public abstract class AbstractID {
 
     private String kind;

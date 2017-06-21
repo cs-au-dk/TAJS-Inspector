@@ -3,6 +3,10 @@ package dk.brics.inspector.api.model.locations;
 import dk.brics.inspector.api.model.ids.LocationID;
 import dk.brics.inspector.api.model.ids.FileID;
 
+
+/**
+ * A syntactic location, qualified by a context.
+ */
 public class ContextSensitiveDescribedLocation extends DescribedLocation {
 
     public final DescribedContext context;
