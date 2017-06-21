@@ -1,7 +1,7 @@
 {
   "project": {
-    "version": "0.1",
-    "name": "TAJS Line Analysis"
+    "version": "0.2",
+    "name": "TAJS Inspector"
   },
   "apps": [
     {
