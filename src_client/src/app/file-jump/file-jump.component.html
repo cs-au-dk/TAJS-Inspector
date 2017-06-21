@@ -33,7 +33,11 @@
     </div>
   </div>
 </div>
-<h5>Jump history <span class="glyphicon glyphicon-trash" style="cursor:pointer" (click)="jumpHistory = []"></span></h5>
+<h5>Jump history
+  <span class="glyphicon glyphicon-trash" style="cursor:pointer" (click)="jumpHistory = []" title="Clear history"></span>
+  <span class="glyphicon glyphicon-chevron-left" style="cursor:pointer" (click)="goHistoryBack()" title="Click to jump backwards"></span>
+  <span class="glyphicon glyphicon-chevron-right" style="cursor:pointer" (click)="goHistoryForwards()" title="Click to jump forwards"></span>
+</h5>
 <div class="list-group" *ngIf="jumpHistory.length > 0">
   <a *ngFor="let landmark of jumpHistory | slice: 0:10; let i = index"
      class="list-group-item"

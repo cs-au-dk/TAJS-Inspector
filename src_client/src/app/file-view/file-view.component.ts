@@ -63,7 +63,6 @@ export class FileViewComponent implements AfterViewInit {
   }
 
   drill(position: CodeMirror.Position) {
-    this.fileJump.windowClick();
     if (this.isVisibleLineValues) this.lineValues.drillAt(this.selectedFile.id, position.line + 1);
     this.currentPosition = position;
   }

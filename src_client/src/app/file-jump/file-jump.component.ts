@@ -91,19 +91,24 @@ export class FileJumpComponent implements OnInit {
     this.jumpHistory.unshift(landmark)
   }
 
-  @HostListener('window:popstate', ['$event'])
-  windowPopState(event: PopStateEvent) {
-    history.pushState(null, document.title, location.href);
-
+  goHistoryBack() {
     if (this.jumpHistory[this.historyBackLevel]) {
       this.doJump(this.jumpHistory[this.historyBackLevel]);
       this.historyBackLevel++;
     }
   }
 
-  @HostListener('window:click')
-  windowClick() {
-    this.historyBackLevel = 0;
+  goHistoryForwards() {
+    if (this.jumpHistory[this.historyBackLevel - 1]) {
+      this.historyBackLevel--;
+      this.doJump(this.jumpHistory[this.historyBackLevel - 1]);
+    }
+  }
+
+  @HostListener('window:popstate', ['$event'])
+  windowPopState(event: PopStateEvent) {
+    history.pushState(null, document.title, location.href);
+    this.goHistoryBack();
   }
 
   @HostListener('window:keydown', ['$event'])
