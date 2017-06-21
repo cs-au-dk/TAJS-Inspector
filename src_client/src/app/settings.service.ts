@@ -1,8 +1,8 @@
-import {Injectable} from "@angular/core";
+import {Injectable} from '@angular/core';
 
 @Injectable()
 export class SettingsService {
-  private readonly STORAGE_KEY_PREFIX = "dk.brics.tajs.la2";
+  private readonly STORAGE_KEY_PREFIX = 'dk.brics.tajs.la2';
   private readonly STORAGE_KEY_VISIBLE_GUTTERS = `${this.STORAGE_KEY_PREFIX}/visibleGutters`;
   private readonly STORAGE_KEY_AGGREGATE_GUTTERS = `${this.STORAGE_KEY_PREFIX}/aggregateGutters`;
   private readonly STORAGE_KEY_VISIBLE_LINEVALUES = `${this.STORAGE_KEY_PREFIX}/lineValues/visible`;

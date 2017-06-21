@@ -1,14 +1,16 @@
-import {AfterViewInit, Component, EventEmitter, Output, ViewChild} from "@angular/core";
-import {CodeService, CONTEXT_ALL} from "../code.service";
-import {IActionMapping, TREE_ACTIONS, TreeComponent, TreeNode} from "angular-tree-component";
-import {Landmark} from "../landmark";
-import {ToastyService} from "ng2-toasty";
-import {Utility} from "../utility";
+import {Component, EventEmitter, Output, ViewChild} from '@angular/core';
+import {CodeService, CONTEXT_ALL} from '../code.service';
+import {IActionMapping, TREE_ACTIONS, TreeComponent, TreeNode} from 'angular-tree-component';
+import {Landmark} from '../landmark';
+import {ToastyService} from 'ng2-toasty';
+import {Utility} from '../utility';
 
 const actionMapping: IActionMapping = {
   mouse: {
     dblClick: (tree, node, $event) => {
-      if (node.hasChildren) TREE_ACTIONS.TOGGLE_EXPANDED(tree, node, $event);
+      if (node.hasChildren) {
+        TREE_ACTIONS.TOGGLE_EXPANDED(tree, node, $event);
+      }
     }
   }
 };
@@ -35,11 +37,11 @@ export class LineValuesComponent {
   private selectedContextValue: DescribedContext;
 
   lineValueKinds: { value: LineValueKind, name: string, checked: boolean }[] = [
-    {value: "VARIABLE", name: "Variable", checked: true},
-    {value: "REGISTER", name: "Register", checked: true},
-    {value: "FIXED_PROPERTY", name: "Fixed property", checked: true},
-    {value: "DYNAMIC_PROPERTY", name: "Dynamic property", checked: true},
-    {value: "UNKNOWN", name: "Unknown", checked: true}
+    {value: 'VARIABLE', name: 'Variable', checked: true},
+    {value: 'REGISTER', name: 'Register', checked: true},
+    {value: 'FIXED_PROPERTY', name: 'Fixed property', checked: true},
+    {value: 'DYNAMIC_PROPERTY', name: 'Dynamic property', checked: true},
+    {value: 'UNKNOWN', name: 'Unknown', checked: true}
   ];
 
   treeOptions = {
@@ -55,16 +57,20 @@ export class LineValuesComponent {
   }
 
   drillAt(fileID: FileID, line: number, context?: DescribedContext) {
-    if (!fileID || !line) return;
+    if (!fileID || !line) {
+      return;
+    }
     this.currentFile = fileID;
     this.currentLine = line;
 
-    let promises = [];
+    const promises = [];
     promises.push(this.codeService.getContexts(fileID, line).then((c: DescribedContext[]) => this.contexts = this.filteredContexts = c));
     promises.push(this.getLineValuesAsTree(fileID, line).then((n: any[]) => this.nodes = n));
 
     Promise.all(promises).then(() => {
-      if (this.contexts.length === 0) return;
+      if (this.contexts.length === 0) {
+        return;
+      }
       this.selectedContext = (context) ? (this.contexts.find(c => c.id === context.id)) : this.contexts[0];
     });
 
@@ -87,26 +93,32 @@ export class LineValuesComponent {
   }
 
   goRelatedLocation(forward: boolean): void {
-    if (!this.filteredNodes) return;
+    if (!this.filteredNodes) {
+      return;
+    }
 
-    let value: LineValue = this.getLastLineValueOnLine();
-    if (!value) return;
+    const value: LineValue = this.getLastLineValueOnLine();
+    if (!value) {
+      return;
+    }
 
-    this.codeService.getRelatedLocation(value.location.id, forward, "LINE", true)
+    this.codeService.getRelatedLocation(value.location.id, forward, 'LINE', true)
       .then((loc: DescribedLocation[]) => {
         if (loc.length < 1) {
           this.toastyService.info(`No ${ (forward) ? 'forwards' : 'backwards'} related location for line ${this.currentLine}`);
           return;
         }
         // TODO: Choose which location to go to!
-        let location = loc[0];
-        let context: DescribedContext = location['context'] || CONTEXT_ALL;
+        const location = loc[0];
+        const context: DescribedContext = location['context'] || CONTEXT_ALL;
         this.jumpTo(location.fileID, location.range.lineStart, context);
       });
   }
 
   getLastLineValueOnLine(): LineValue {
-    if (this.filteredNodes.length === 0) return null;
+    if (this.filteredNodes.length === 0) {
+      return null;
+    }
     // LineValue w/largest columnStart on line and in the selected context
     return this.filteredNodes.reduce((acc: LineValue, value: LineValue) =>
       (acc === undefined || value.location.range.columnStart > acc.location.range.columnStart) ? value : acc)
@@ -118,14 +130,16 @@ export class LineValuesComponent {
       return;
     }
 
-    let value: LineValue = this.getLastLineValueOnLine();
-    if (!value) return;
+    const value: LineValue = this.getLastLineValueOnLine();
+    if (!value) {
+      return;
+    }
 
     this.codeService.getFilteredContexts(value.location.id, expression)
       .then((cts: DescribedContext[]) => this.filteredContexts = cts)
       .catch(err => {
         this.filteredContexts = this.contexts;
-        this.toastyService.warning("API failed on filtering query. Recovering contexts.");
+        this.toastyService.warning('API failed on filtering query. Recovering contexts.');
         console.log(err);
       });
   }
@@ -140,18 +154,18 @@ export class LineValuesComponent {
     }
 
     // Filter by selected kinds
-    let selectedKinds = this.lineValueKinds.filter(k => k.checked).map(k => k.value);
+    const selectedKinds = this.lineValueKinds.filter(k => k.checked).map(k => k.value);
     this.filteredNodes = this.filteredNodes.filter(v => (selectedKinds.indexOf(v.kind) > -1));
   }
 
   getChildren(node: TreeNode): Promise<TreeNode[]> {
-    let objectID = node.parent.data.id;
+    const objectID = node.parent.data.id;
     let res: Promise<any[]>;
 
     switch (node.data.nodeTypeChildren) {
       case SemanticNodeType.Allocation:
         res = this.codeService.getAllocationLocations(objectID)
-          .then((ls: any[]) => ls.map(l => Object.assign(l, {nodeType: StructuralNodeType.Jump},)));
+          .then((ls: any[]) => ls.map(l => Object.assign(l, {nodeType: StructuralNodeType.Jump})));
         break;
       case SemanticNodeType.Call:
         res = this.codeService.getCallLocations(objectID)
@@ -162,13 +176,14 @@ export class LineValuesComponent {
           .then((ls: any[]) => ls.map(l => Object.assign(l, {nodeType: StructuralNodeType.Jump})));
         break;
       case SemanticNodeType.Property:
-        let location = node.parent.parent.data.location;
+        const location = node.parent.parent.data.location;
         res = (location && location.id)
-          ? this.codeService.getObjectProperties(objectID, location.id).then((props: DescribedProperties) => this.getSubtreeForProperties(props))
+          ? this.codeService.getObjectProperties(objectID, location.id)
+            .then((props: DescribedProperties) => this.getSubtreeForProperties(props))
           : Promise.resolve([]);
         break;
       default:
-        this.toastyService.error("TREE CHILDREN ERROR: Unimplemented subtree type");
+        this.toastyService.error('TREE CHILDREN ERROR: Unimplemented subtree type');
         res = Promise.resolve([]);
     }
 
@@ -187,7 +202,7 @@ export class LineValuesComponent {
     this.codeService.getAllocationLocations(objectID)
       .then((ls: ContextSensitiveDescribedLocation[]) => {
         if (ls.length === 1) {
-          let loc = ls[0];
+          const loc = ls[0];
           this.jumpTo(loc.fileID, loc.range.lineStart, loc.context);
         } else {
           TREE_ACTIONS.TOGGLE_EXPANDED(this.tree.treeModel, callingNode, {});
@@ -201,7 +216,9 @@ export class LineValuesComponent {
   }
 
   refresh() {
-    if (this.tree) this.tree.viewportComponent.setViewport();
+    if (this.tree) {
+      this.tree.viewportComponent.setViewport();
+    }
   }
 
   private getLineValuesAsTree(fileID: FileID, line: number): Promise<any[]> {
@@ -216,11 +233,11 @@ export class LineValuesComponent {
 
   private getSubtreeForValue(singleValue: SingleValue): any {
     if (!singleValue.hasOwnProperty('id')) {
-      let primitive = <DescribedPrimitive> singleValue;
+      const primitive = <DescribedPrimitive> singleValue;
       return {rendering: primitive.rendering};
     }
 
-    let obj: DescribedObject = <DescribedObject> singleValue;
+    const obj: DescribedObject = <DescribedObject> singleValue;
     return Object.assign(obj, {
       nodeType: StructuralNodeType.DescribedObject,
       children: [

@@ -1,7 +1,7 @@
 <div id="file-viewer">
-  <app-codeMirror #cm
+  <app-codemirror #cm
                   [(ngModel)]="selectedFile.content"
                   (change)="updateGutter()"
                   [config]="codeMirrorConfig">
-  </app-codeMirror>
+  </app-codemirror>
 </div>

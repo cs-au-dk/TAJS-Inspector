@@ -1,5 +1,5 @@
-import {ErrorHandler, Injectable, Injector} from "@angular/core";
-import {ToastyService} from "ng2-toasty";
+import {ErrorHandler, Injectable, Injector} from '@angular/core';
+import {ToastOptions, ToastyService} from 'ng2-toasty';
 
 @Injectable()
 export class AppErrorHandler implements ErrorHandler {
@@ -12,6 +12,6 @@ export class AppErrorHandler implements ErrorHandler {
     const message = error.message ? error.message : error.toString();
 
     console.log(error);
-    toast.error({title: `ERROR: ${message}`, timeout: 0});
+    toast.error(<ToastOptions>{title: `ERROR: ${message}`, timeout: 0});
   }
 }

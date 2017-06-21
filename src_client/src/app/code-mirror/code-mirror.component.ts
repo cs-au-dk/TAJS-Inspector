@@ -8,7 +8,7 @@ import * as CodeMirror from 'codemirror';
  * <codemirror [(ngModel)]="data" [codeMirrorConfig]="{...}"></codemirror>
  */
 @Component({
-  selector: 'app-codeMirror',
+  selector: 'app-codemirror',
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,

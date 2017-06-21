@@ -1,11 +1,11 @@
-import {Component, EventEmitter, HostListener, Input, OnInit, Output} from "@angular/core";
-import {isUndefined} from "util";
-import {Landmark} from "../landmark";
-import {CodeService} from "../code.service";
-import {Dictionary} from "../dictionary";
-import {BookmarkService} from "../bookmark.service";
-import {SettingsService} from "../settings.service";
-import {Utility} from "../utility";
+import {Component, EventEmitter, HostListener, Input, OnInit, Output} from '@angular/core';
+import {isUndefined} from 'util';
+import {Landmark} from '../landmark';
+import {CodeService} from '../code.service';
+import {Dictionary} from '../dictionary';
+import {BookmarkService} from '../bookmark.service';
+import {SettingsService} from '../settings.service';
+import {Utility} from '../utility';
 
 enum JUMP_DIRECTION {
   UP, DOWN
@@ -23,12 +23,12 @@ export class FileJumpComponent implements OnInit {
   sortedLines: Dictionary<[{ fileID: string, line: number, value: number }]>;
   bookmarks: Landmark[] = [];
   jumpGutter: string;
-  jumpIndex: number = 0;
+  jumpIndex = 0;
   jumpHistory: Landmark[] = [];
   visibleGutters: string[];
   selectedGutter;
 
-  historyBackLevel: number = 0;
+  historyBackLevel = 0;
 
   constructor(private codeService: CodeService,
               private boookmarkService: BookmarkService,
@@ -39,7 +39,7 @@ export class FileJumpComponent implements OnInit {
     // 'Hack' together with host listener on window:popstate for overriding browser back
     history.pushState(null, document.title, location.href);
 
-    let storedGutters = this.settingsService.getVisibleGutters();
+    const storedGutters = this.settingsService.getVisibleGutters();
     this.codeService.getAvailableGutters()
       .then(availableGutters => this.visibleGutters = availableGutters
         .map(g => g.name)
@@ -50,11 +50,11 @@ export class FileJumpComponent implements OnInit {
 
   setJumpGutter(gutter: string) {
     // Highlight name column
-    if (this.jumpGutter != undefined) {
-      let prev = document.getElementsByClassName(Utility.getGutterID(this.jumpGutter));
+    if (this.jumpGutter !== undefined) {
+      const prev = document.getElementsByClassName(Utility.getGutterID(this.jumpGutter));
       (<HTMLElement>prev[0]).style.backgroundColor = '';
     }
-    let next = document.getElementsByClassName(Utility.getGutterID(gutter));
+    const next = document.getElementsByClassName(Utility.getGutterID(gutter));
     (<HTMLElement>next[0]).style.backgroundColor = '#E8F2FF';
 
     this.jumpGutter = gutter;
@@ -63,27 +63,37 @@ export class FileJumpComponent implements OnInit {
   }
 
   doJumpDirection(direction: JUMP_DIRECTION) {
-    if (isUndefined(this.jumpGutter)) return;
-    if (direction === JUMP_DIRECTION.DOWN) this.jumpIndex++;
-    if (direction === JUMP_DIRECTION.UP) this.jumpIndex = Math.max(this.jumpIndex - 1, 0);
+    if (isUndefined(this.jumpGutter)) {
+      return;
+    }
+    if (direction === JUMP_DIRECTION.DOWN) {
+      this.jumpIndex++;
+    }
+    if (direction === JUMP_DIRECTION.UP) {
+      this.jumpIndex = Math.max(this.jumpIndex - 1, 0);
+    }
 
     this.doJump();
   }
 
   doJump(landmark?: Landmark) {
-    if (!this.jumpGutter) return;
+    if (!this.jumpGutter) {
+      return;
+    }
 
-    let destination = (landmark) ? landmark : new Landmark(
-      this.sortedLines[this.jumpGutter][this.jumpIndex].fileID
+    const destination = (landmark) ? landmark : new Landmark(
+      <FileID>this.sortedLines[this.jumpGutter][this.jumpIndex].fileID
       , this.sortedLines[this.jumpGutter][this.jumpIndex].line
       , `${this.jumpGutter} (${this.jumpIndex})`);
 
     this.jump.emit(destination);
-    if (!landmark) this.addToHistory(destination);
+    if (!landmark) {
+      this.addToHistory(destination);
+    }
   }
 
   addToHistory(landmark: Landmark) {
-    let l = this.jumpHistory[0];
+    const l = this.jumpHistory[0];
     if (l && l.fileID === landmark.fileID && l.line === landmark.line && l.description === landmark.description) {
       return;
     }
@@ -113,7 +123,9 @@ export class FileJumpComponent implements OnInit {
 
   @HostListener('window:keydown', ['$event'])
   windowKeyDown(event: KeyboardEvent) {
-    if (!event.ctrlKey) return;
+    if (!event.ctrlKey) {
+      return;
+    }
 
     switch (event.keyCode) {
       case 38: // ctrl + arrow-up

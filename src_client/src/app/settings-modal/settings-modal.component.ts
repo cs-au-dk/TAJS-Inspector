@@ -1,7 +1,7 @@
-import {Component, OnInit, ViewChild} from "@angular/core";
-import {ModalComponent} from "../modal/modal.component";
-import {SettingsService} from "../settings.service";
-import {CodeService} from "../code.service";
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {ModalComponent} from '../modal/modal.component';
+import {SettingsService} from '../settings.service';
+import {CodeService} from '../code.service';
 
 @Component({
   selector: 'app-settings-modal',
@@ -20,8 +20,8 @@ export class SettingsModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    let visibleGutters = this.settingsService.getVisibleGutters();
-    let aggregateGutters = this.settingsService.getAggregateGutters();
+    const visibleGutters = this.settingsService.getVisibleGutters();
+    const aggregateGutters = this.settingsService.getAggregateGutters();
 
     this.codeService.getAvailableGutters().then((gs: Gutter<any>[]) =>
       this.gutters = gs.map(g => ({

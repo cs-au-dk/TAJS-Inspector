@@ -3,7 +3,7 @@ export class Utility {
   static makeRGBColorStringFromGreenToRed(relative: number): string {
     // Taken from dk.brics.tajs.meta.lineAnalysis.RelativeColorer
 
-    const byteMax: number = 255;
+    const byteMax = 255;
     let scale: number = relative * (byteMax * 2);
     let redValue = 0;
     let greenValue = 0;
@@ -20,16 +20,18 @@ export class Utility {
   }
 
   static flattenObjectToString(obj: any, exclude: ((value: any) => boolean), prefix = '', accumulator?: string[]): string[] {
-    let res = (accumulator === undefined) ? [] : accumulator;
+    const res = (accumulator === undefined) ? [] : accumulator;
 
     Object.keys(obj).forEach(key => {
-      let val = obj[key];
-      if (val === null) return;
+      const val = obj[key];
+      if (val === null) {
+        return;
+      }
 
       if (typeof val === 'object' && !(val instanceof Array)) {
-        this.flattenObjectToString(val, exclude, prefix + key + " - ", res);
+        this.flattenObjectToString(val, exclude, prefix + key + ' - ', res);
       } else if (!exclude(val) || val instanceof Array) {
-        res.push(prefix + key + ": " + val.toString());
+        res.push(prefix + key + ': ' + val.toString());
       }
 
     });

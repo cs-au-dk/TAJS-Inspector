@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {CodeService} from '../code.service';
 import {Utility} from '../utility';
 import {GutterSums} from '../gutter-sums';
-import {SettingsService} from "../settings.service";
+import {SettingsService} from '../settings.service';
 
 @Component({
   selector: 'app-overview',

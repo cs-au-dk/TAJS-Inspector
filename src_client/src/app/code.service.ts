@@ -1,10 +1,9 @@
-import {Injectable} from "@angular/core";
-import "rxjs/add/operator/toPromise";
-import {Utility} from "./utility";
-import {ApiService} from "./api.service";
-import {Dictionary} from "./dictionary";
-import {GutterSums} from "./gutter-sums";
-import {FileIDDictionary} from "./file-id-dictionary";
+import {Injectable} from '@angular/core';
+import 'rxjs/add/operator/toPromise';
+import {ApiService} from './api.service';
+import {Dictionary} from './dictionary';
+import {GutterSums} from './gutter-sums';
+import {FileIDDictionary} from './file-id-dictionary';
 
 export const CONTEXT_ALL = {rendering: 'all', id: null};
 
@@ -57,7 +56,8 @@ export class CodeService {
     return this.api.getEventHandlerRegistrationLocations(objectID);
   }
 
-  getRelatedLocation(locationID: LocationID, forwards: boolean, kind: RelatedLocationKind, intraprocedural: boolean): Promise<DescribedLocation[]> {
+  getRelatedLocation(locationID: LocationID, forwards: boolean
+    , kind: RelatedLocationKind, intraprocedural: boolean): Promise<DescribedLocation[]> {
     return this.api.getRelatedLocation(locationID, forwards, kind, intraprocedural);
   }
 
@@ -78,12 +78,16 @@ export class CodeService {
   }
 
   private getUniqueContexts(lineValues: LineValue[]): DescribedContext[] {
-    let res: DescribedContext[] = [];
+    const res: DescribedContext[] = [];
 
     res.push(CONTEXT_ALL);
     lineValues.forEach(value => {
-      if (!value.location.hasOwnProperty('context')) return;
-      if (res.find(c => c.id === value.location['context']['id'])) return;
+      if (!value.location.hasOwnProperty('context')) {
+        return;
+      }
+      if (res.find(c => c.id === value.location['context']['id'])) {
+        return;
+      }
       res.push(value.location['context']);
     });
 
@@ -97,7 +101,7 @@ export class CodeService {
   getSums(gutters: string[]): Promise<GutterSums[]> {
     let allGutters;
     let fileNames;
-    let promises = [];
+    const promises = [];
     promises.push(this.getAllGutters().then(l => allGutters = l));
     promises.push(this.getFileNames().then(ns => fileNames = ns));
     return Promise.all(promises).then(() => this.calculatePropertySums(gutters, allGutters, fileNames));
@@ -109,24 +113,29 @@ export class CodeService {
 
   private getFileNames(): Promise<FileIDDictionary<string>> {
     return this.getFiles().then((files: FileDescription[]) => {
-      let res = {};
+      const res = {};
       files.forEach(f => res[f.id.toString()] = f.name);
       return res;
     });
   }
 
-  private calculatePropertySums(gutters: string[], dictionary: FileIDDictionary<Gutter<any>[]>, fileNames: FileIDDictionary<string>): GutterSums[] {
-    let res = [];
+  private calculatePropertySums(gutters: string[], dictionary: FileIDDictionary<Gutter<any>[]>
+    , fileNames: FileIDDictionary<string>): GutterSums[] {
+    const res = [];
     Object.keys(dictionary).forEach(fileID => {
-      let temp = {};
+      const temp = {};
       dictionary[fileID].filter(g => gutters.indexOf(g.name) !== -1)
         .forEach(gutter => {
           Object.keys(gutter.data.data).forEach(line => {
-            let prop = gutter.name;
-            let value = gutter.data.data[line];
+            const prop = gutter.name;
+            const value = gutter.data.data[line];
 
-            if (!temp[prop]) temp[prop] = 0;
-            if (typeof value === 'number') temp[prop] += value;
+            if (!temp[prop]) {
+              temp[prop] = 0;
+            }
+            if (typeof value === 'number') {
+              temp[prop] += value;
+            }
           })
         });
       res.push({fileID: fileID, name: fileNames[fileID], sums: temp});
@@ -135,20 +144,23 @@ export class CodeService {
   }
 
   private zip(gutters: Gutter<any>[][], fileIDs: FileID[]): FileIDDictionary<Gutter<any>[]> {
-    let res = {};
+    const res = {};
     fileIDs.forEach((fileID, i) => res[fileID.toString()] = gutters[i]);
     return res;
   }
 
-  private sortLines(dictionary: FileIDDictionary<Gutter<any>[]>): { [property: string]: [{ fileID: string, line: number, value: number }] } {
-    let temp = {};
+  private sortLines(dictionary: FileIDDictionary<Gutter<any>[]>): { [property: string]: [{ fileID: string, line: number
+    , value: number }] } {
+    const temp = {};
     Object.keys(dictionary).forEach(fileID => {
       dictionary[fileID].forEach(gutter => {
         Object.keys(gutter.data.data).forEach(line => {
-          let prop = gutter.name;
-          let value = gutter.data.data[line];
+          const prop = gutter.name;
+          const value = gutter.data.data[line];
 
-          if (!temp[prop]) temp[prop] = [];
+          if (!temp[prop]) {
+            temp[prop] = [];
+          }
           temp[prop].push({fileID: fileID, line: line, value: value});
         });
       })

@@ -1,13 +1,15 @@
-import {Component, EventEmitter, Input, Output, ViewChild} from "@angular/core";
-import {CodeService} from "../code.service";
-import {IActionMapping, TREE_ACTIONS, TreeComponent, TreeNode} from "angular-tree-component";
-import {Landmark} from "../landmark";
-import * as CodeMirror from "codemirror";
+import {Component, EventEmitter, Input, Output, ViewChild} from '@angular/core';
+import {CodeService} from '../code.service';
+import {IActionMapping, TREE_ACTIONS, TreeComponent, TreeNode} from 'angular-tree-component';
+import {Landmark} from '../landmark';
+import * as CodeMirror from 'codemirror';
 
 const actionMapping: IActionMapping = {
   mouse: {
     dblClick: (tree, node, $event) => {
-      if (node.hasChildren) TREE_ACTIONS.TOGGLE_EXPANDED(tree, node, $event);
+      if (node.hasChildren) {
+        TREE_ACTIONS.TOGGLE_EXPANDED(tree, node, $event);
+      }
     }
   }
 };
@@ -23,7 +25,7 @@ export class CallHierarchyComponent {
   @ViewChild(TreeComponent) tree: TreeComponent;
   @Output() jump: EventEmitter<Landmark> = new EventEmitter();
 
-  //TODO: COME UP WITH BETTER WAY - SHOULD BE EXTRACTED TO CODESERVICE?
+  // TODO: COME UP WITH BETTER WAY - SHOULD BE EXTRACTED TO CODESERVICE?
   @Input() resolver: { resolve: ((number) => string) };
 
   nodeType = StructuralNodeType;
@@ -58,8 +60,8 @@ export class CallHierarchyComponent {
   }
 
   getChildren(node: TreeNode): Promise<TreeNode[]> {
-    let objectID = node.data.objectID;
-    let locationID = node.data.id;
+    const objectID = node.data.objectID;
+    const locationID = node.data.id;
 
     if (node.data.nodeType === StructuralNodeType.CALL_LOCATIONS) {
       return this.enclosingFunction(locationID);
@@ -92,7 +94,9 @@ export class CallHierarchyComponent {
   }
 
   refresh() {
-    if (this.tree) this.tree.viewportComponent.setViewport();
+    if (this.tree) {
+      this.tree.viewportComponent.setViewport();
+    }
   }
 
   jumpTo(file: FileID, line: number, context: DescribedContext) {
