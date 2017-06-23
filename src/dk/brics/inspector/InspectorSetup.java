@@ -7,7 +7,10 @@ import org.apache.log4j.Logger;
 
 import java.awt.*;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 
 /**
  * External handles for starting an {@link InspectorServer}.
@@ -36,7 +39,11 @@ public class InspectorSetup {
     private static Thread makeServerThread(InspectorServer server) {
         return new Thread(() -> {
             InspectorServer.RunningServer runningServer = server.startServer();
-            openBrowser(runningServer.getURI());
+            try {
+                openBrowser(new URL("http", "localhost", runningServer.getURI().getPort(), runningServer.getURI().getPath()).toURI());
+            } catch (URISyntaxException | MalformedURLException e) {
+                throw new RuntimeException(e);
+            }
             try {
                 log.info("Waiting for server to terminate...");
                 runningServer.join();
