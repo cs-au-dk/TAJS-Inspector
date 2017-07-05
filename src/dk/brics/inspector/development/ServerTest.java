@@ -1,7 +1,7 @@
 package dk.brics.inspector.development;
 
+import dk.brics.inspector.InspectorSetup;
 import dk.brics.inspector.client.InspectorClient;
-import dk.brics.inspector.development.DummyAPI;
 import dk.brics.inspector.server.InspectorServer;
 import org.eclipse.jetty.util.resource.Resource;
 
@@ -11,7 +11,11 @@ import java.nio.file.Paths;
 public class ServerTest {
 
     public static void main(String[] args) {
-        new InspectorServer(new DummyAPI(), makeDevelopmentClient()).startServer();
+        if(true){
+            InspectorSetup.simpleStart(new DummyAPI(), makeDevelopmentClient());
+        }else {
+            new InspectorServer(new DummyAPI(), makeDevelopmentClient()).startServer();
+        }
     }
 
     public static InspectorClient makeDevelopmentClient() {

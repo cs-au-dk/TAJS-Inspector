@@ -215,6 +215,11 @@ public class InspectorServer {
         public void join() throws InterruptedException {
             server.join();
         }
+
+        public void stop() throws Exception {
+            server.stop();
+        }
+
     }
 
     private class FilesServlet extends DefaultServlet {

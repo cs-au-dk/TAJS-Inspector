@@ -6,7 +6,10 @@ import dk.brics.inspector.server.InspectorServer;
 import org.apache.log4j.Logger;
 
 import java.awt.*;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -24,7 +27,12 @@ public class InspectorSetup {
      */
     @SuppressWarnings("unused") // used externally
     public static void simpleStart(InspectorAPI api) {
-        InspectorServer server = new InspectorServer(api, InspectorClient.makeStandardClient());
+        InspectorClient client = InspectorClient.makeStandardClient();
+        simpleStart(api, client);
+    }
+
+    public static void simpleStart(InspectorAPI api, InspectorClient client) {
+        InspectorServer server = new InspectorServer(api, client);
         Thread serverThread = makeServerThread(server);
         serverThread.start();
         try {
@@ -41,17 +49,46 @@ public class InspectorSetup {
             InspectorServer.RunningServer runningServer = server.startServer();
             try {
                 openBrowser(new URL("http", "localhost", runningServer.getURI().getPort(), runningServer.getURI().getPath()).toURI());
+                try {
+                    Thread.sleep(1000); // wait for the browser to start properly
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+
             } catch (URISyntaxException | MalformedURLException e) {
                 throw new RuntimeException(e);
             }
             try {
-                log.info("Waiting for server to terminate...");
+                makeConsole(runningServer);
+                log.info("Console access terminated. Waiting for server to terminate...");
                 runningServer.join();
                 log.info("Server has terminated.");
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
         });
+    }
+
+    public static void main(String[] args) {
+        makeConsole(null);
+    }
+
+    private static void makeConsole(InspectorServer.RunningServer server) {
+        Console c = new Console();
+        c.format("%n---%nWrite commands to interact with the server (write 'stop' to stop the server).%n");
+        while (true) {
+            String command = c.readLine("SERVER > ");
+            if (command.equals("stop")) {
+                c.format("Got command '%s', stopping ...%n", command);
+                try {
+                    server.stop();
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+                break;
+            }
+            c.format("Command '%s' not understood%n", command);
+        }
     }
 
     private static void openBrowser(URI uri) {
@@ -63,6 +100,31 @@ public class InspectorSetup {
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private static class Console {
+
+        BufferedReader br;
+
+        PrintStream ps;
+
+        public Console() {
+            br = new BufferedReader(new InputStreamReader(System.in));
+            ps = System.out;
+        }
+
+        public String readLine(String out) {
+            ps.format(out);
+            try {
+                return br.readLine();
+            } catch (IOException e) {
+                return null;
+            }
+        }
+
+        public PrintStream format(String format, Object... objects) {
+            return ps.format(format, objects);
         }
     }
 }
