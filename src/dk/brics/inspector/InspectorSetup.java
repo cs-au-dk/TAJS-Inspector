@@ -54,7 +54,6 @@ public class InspectorSetup {
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
-
             } catch (URISyntaxException | MalformedURLException e) {
                 throw new RuntimeException(e);
             }
@@ -75,19 +74,30 @@ public class InspectorSetup {
 
     private static void makeConsole(InspectorServer.RunningServer server) {
         Console c = new Console();
-        c.format("%n---%nWrite commands to interact with the server (write 'stop' to stop the server).%n");
-        while (true) {
-            String command = c.readLine("SERVER > ");
-            if (command.equals("stop")) {
-                c.format("Got command '%s', stopping ...%n", command);
-                try {
-                    server.stop();
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
+        boolean INTERACTIVE = false;
+        if (INTERACTIVE) {
+            c.format("%n---%nWrite commands to interact with the server (write 'stop' to stop the server).%n");
+            while (true) {
+                String command = c.readLine("SERVER > ");
+                if (command.equals("stop")) {
+                    c.format("Got command '%s', stopping ...%n", command);
+                    try {
+                        server.stop();
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                    break;
                 }
-                break;
+                c.format("Command '%s' not understood%n", command);
             }
-            c.format("Command '%s' not understood%n", command);
+        } else {
+            c.format("%n---%n---%nPress <ENTER> to stop the server.%n---%n---%n");
+            c.readLine("");
+            try {
+                server.stop();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
