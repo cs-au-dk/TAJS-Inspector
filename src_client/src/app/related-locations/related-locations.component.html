@@ -1,0 +1,56 @@
+<div style="padding: 0 0 40px 0; height: inherit">
+  <h4>Related locations
+    <small>@ {{currentPosition?.line + 1}}:{{currentPosition?.ch}}</small>
+    <button class="btn btn-default btn-sm"
+            (click)="drill()"
+            title="Show call hierarchy on current line (ALT + M)">
+      <i class="glyphicon glyphicon-screenshot"></i>
+    </button>
+  </h4>
+  <div class="row">
+    <div class="col-xs-3">
+      Direction:
+    </div>
+    <div class="col-xs-9">
+      <label class="radio-inline"><input type="radio" name="direction" [(ngModel)]="forwards" [value]="true">Forwards</label>
+      <label class="radio-inline"><input type="radio" name="direction" [(ngModel)]="forwards" [value]="false">Backwards</label>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-3">
+      Kind:
+    </div>
+    <div class="col-xs-9">
+      <label class="radio-inline"><input type="radio" name="kind" [(ngModel)]="kind" [value]="'LINE'">Line</label>
+      <label class="radio-inline"><input type="radio" name="kind" [(ngModel)]="kind" [value]="'BLOCK'">Block</label>
+      <label class="radio-inline"><input type="radio" name="kind" [(ngModel)]="kind" [value]="'NODE'">Node</label>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-3">
+      Intraprocedural:
+    </div>
+    <div class="col-xs-9">
+      <label class="radio-inline"><input type="radio" name="intra" [(ngModel)]="intraprocedural" [value]="true">True</label>
+      <label class="radio-inline"><input type="radio" name="intra" [(ngModel)]="intraprocedural" [value]="false">False</label>
+    </div>
+  </div>
+  <br>
+  <i *ngIf="nodes.length === 0">No related locations at selected line.</i>
+  <div class="tree-wrapper" *ngIf="nodes.length > 0">
+    <tree-root
+      [nodes]="nodes"
+      [options]="treeOptions">
+      <ng-template #treeNodeTemplate let-node let-index="index">
+        <span class="code">{{resolver.resolve(node.data.range.lineStart)}}</span>
+        <span class="text-muted">
+        @ {{node.data.range.lineStart}}:{{node.data.range.columnStart}}"
+      </span>
+        <span class="glyphicon glyphicon-share-alt text-primary baseline"
+              title="jump to location"
+              (click)="jumpTo(node.data.fileID, node.data.range.lineStart, node.data.context)">
+        </span>
+      </ng-template>
+    </tree-root>
+  </div>
+</div>

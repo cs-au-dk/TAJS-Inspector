@@ -84,13 +84,16 @@ export class ApiService {
       .catch(this.handleError);
   }
 
-  getRelatedLocation(locationID: LocationID, forwards: boolean, kind: RelatedLocationKind
-    , intraprocedural: boolean): Promise<DescribedLocation[]> {
+  getRelatedLocations(locationID: LocationID, forwards: boolean, kind: RelatedLocationKind
+    , intraprocedural: boolean, contextID: ContextID): Promise<DescribedLocation[]> {
     const params = new URLSearchParams();
     params.set('locationID', locationID.toString());
     params.set('forwards', forwards.toString());
     params.set('kind', kind);
     params.set('intraprocedural', intraprocedural.toString());
+    if (contextID) {
+      params.set('contextID', contextID.toString());
+    }
 
     return this.http.get(this.apiUrl + '/related-locations', {search: params})
       .toPromise()

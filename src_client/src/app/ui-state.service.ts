@@ -83,6 +83,10 @@ export class UIStateStore {
     return this._cursorPosition.getValue();
   }
 
+  getCurrentContext(): DescribedContext {
+    return this._context.getValue();
+  }
+
   getCurrentJumpHistory(): Landmark[] {
     return this._jumpHistory.getValue();
   }

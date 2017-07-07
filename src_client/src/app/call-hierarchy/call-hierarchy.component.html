@@ -16,7 +16,7 @@
       <ng-template #treeNodeTemplate let-node let-index="index">
         <span class="code">{{resolver.resolve(node.data.range.lineStart)}}</span>
         <span class="text-muted">
-        @ {{node.data.id}}:{{node.data.range.lineStart + 1}}:{{node.data.range.columnStart}}"
+        @ {{node.data.range.lineStart}}:{{node.data.range.columnStart}}"
       </span>
         <span class="glyphicon glyphicon-share-alt text-primary baseline"
               title="jump to location"

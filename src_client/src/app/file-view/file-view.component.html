@@ -39,6 +39,7 @@
               <ul class="nav nav-tabs">
                 <li class="active"><a data-toggle="tab" href="#jump">Jumping</a></li>
                 <li><a data-toggle="tab" href="#call">Call hierarchy</a></li>
+                <li><a data-toggle="tab" href="#related">Related locations</a></li>
               </ul>
 
               <div class="tab-content height-inherit overflow-auto" style="padding-bottom: 20px">
@@ -48,6 +49,9 @@
                 </div>
                 <div id="call" class="tab-pane height-inherit" style="overflow: hidden">
                   <app-call-hierarchy [resolver]="_this"></app-call-hierarchy>
+                </div>
+                <div id="related" class="tab-pane height-inherit" style="overflow: hidden">
+                  <app-related-locations [resolver]="_this"></app-related-locations>
                 </div>
               </div>
             </div>

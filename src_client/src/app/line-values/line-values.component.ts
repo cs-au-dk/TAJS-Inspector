@@ -2,7 +2,6 @@ import {Component, ViewChild} from '@angular/core';
 import {IActionMapping, TREE_ACTIONS, TreeComponent, TreeNode} from 'angular-tree-component';
 import * as CodeMirror from 'codemirror';
 import {ToastyService} from 'ng2-toasty';
-import {CallHierarchyComponent} from '../call-hierarchy/call-hierarchy.component';
 import {CodeService, CONTEXT_ALL} from '../code.service';
 import {Landmark} from '../landmark';
 import {SemanticNodeType, StructuralNodeType, TreeBuilder} from '../tree-builder';
@@ -60,12 +59,13 @@ export class LineValuesComponent {
     this.uiStateStore.context.subscribe((context: DescribedContext) => this.selectedContext = context);
     this.uiStateStore.cursorPosition.subscribe((position: CodeMirror.Position) => {
       this.drillAt(position);
-      this.currentPosition = position
+      this.currentPosition = position;
     });
   }
 
   set selectedContext(context: DescribedContext) {
     this._context = context;
+    this.uiStateStore.changeContext(context);
     this.filterValues();
   }
 
@@ -79,7 +79,7 @@ export class LineValuesComponent {
     }
     const promises = [];
     promises.push(this.codeService.getContexts(this.currentFile, position.line + 1)
-      .then((cs) => this.contexts = this.filteredContexts = cs));
+      .then(cs => this.contexts = this.filteredContexts = cs));
     promises.push(this.getLineValuesAsTree(this.currentFile, position.line + 1).then(n => this.lineValueNodes = n));
     Promise.all(promises).then(() => {
       if (this.contexts.length !== 0) {
@@ -102,20 +102,28 @@ export class LineValuesComponent {
       this.filteredContexts = this.contexts;
       return;
     }
-    const value: LineValue = this.getLastLineValueOnLine();
-    if (!value) {
-      return;
-    }
-    this.codeService.getFilteredContexts(value.location.id, expression)
-      .then((cts: DescribedContext[]) => this.filteredContexts = cts)
-      .catch(err => {
-        this.filteredContexts = this.contexts;
-        this.toastyService.warning('API failed on filtering query. Recovering contexts.');
-        console.log(err);
+    this.codeService.getPositionalLocationID(this.currentFile, this.currentPosition.line + 1, this.currentPosition.ch)
+      .then((opt: Optional<DescribedLocation>) => {
+        if (!opt.value) {
+          this.toastyService.info('No location available at line');
+          return;
+        }
+        this.codeService.getFilteredContexts(opt.value.id, expression)
+          .then((cts: DescribedContext[]) => this.filteredContexts = cts)
+          .catch(err => {
+            this.filteredContexts = this.contexts;
+            this.toastyService.warning('API failed on filtering query. Recovering contexts.');
+            console.log(err);
+          });
       });
+
   }
 
   filterValues() {
+    if (!this.selectedContext) {
+      return;
+    }
+
     // Filter by fileID context
     if (this.selectedContext === CONTEXT_ALL) {
       this.filteredLineValueNodes = this.lineValueNodes.filter(n => !n.location.hasOwnProperty('context'));
@@ -188,15 +196,6 @@ export class LineValuesComponent {
     if (this.tree) {
       this.tree.viewportComponent.setViewport();
     }
-  }
-
-  private getLastLineValueOnLine(): LineValue {
-    if (this.filteredLineValueNodes.length === 0) {
-      return null;
-    }
-    // LineValue w/largest columnStart on line and in the fileID context
-    return this.filteredLineValueNodes.reduce((acc: LineValue, value: LineValue) =>
-      (acc === undefined || value.location.range.columnStart > acc.location.range.columnStart) ? value : acc)
   }
 
   private getLineValuesAsTree(fileID: FileID, line: number): Promise<any[]> {

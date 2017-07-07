@@ -72,9 +72,9 @@ export class CodeService {
     return this.api.getEventHandlerRegistrationLocations(objectID);
   }
 
-  getRelatedLocation(locationID: LocationID, forwards: boolean
-    , kind: RelatedLocationKind, intraprocedural: boolean): Promise<DescribedLocation[]> {
-    return this.api.getRelatedLocation(locationID, forwards, kind, intraprocedural);
+  getRelatedLocations(locationID: LocationID, forwards: boolean
+    , kind: RelatedLocationKind, intraprocedural: boolean, context?: ContextID): Promise<DescribedLocation[]> {
+    return this.api.getRelatedLocations(locationID, forwards, kind, intraprocedural, context);
   }
 
   getPositionalLocationID(fileID: FileID, line: number, column: number, contextID?: ContextID): Promise<Optional<DescribedLocation>> {

@@ -26,6 +26,7 @@ import {SettingsModalComponent} from './settings-modal/settings-modal.component'
 import {SettingsService} from './settings.service';
 import {ShortcutModalComponent} from './shortcut-modal/shortcut-modal.component';
 import {UIStateStore} from './ui-state.service';
+import { RelatedLocationsComponent } from './related-locations/related-locations.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +43,8 @@ import {UIStateStore} from './ui-state.service';
     SettingsModalComponent,
     FileMessageSearchComponent,
     EllipsisPipe,
-    CallHierarchyComponent
+    CallHierarchyComponent,
+    RelatedLocationsComponent
   ],
   imports: [
     BrowserModule,
