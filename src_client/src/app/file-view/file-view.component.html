@@ -29,25 +29,27 @@
           </div>
         </div>
         <div class="split-pane-content-secondary h-100">
+
           <vertical-split-pane [primary-component-initialratio]="0.6"
                                [local-storage-key]="'lineAnalysis3'">
             <div class="split-pane-content-primary h-100 overflow-auto " style="padding-right: 5px;">
               <app-file-editor></app-file-editor>
             </div>
             <div class="split-pane-content-secondary height-inherit" style="overflow: hidden">
-              <vertical-split-pane [primary-component-initialratio]="0.5"
-                                   [local-storage-key]="'lineAnalysis4'"
-                                   [secondary-component-minsize]="100"
-                                   [primary-component-minsize]="100">
-                <div class="split-pane-content-primary height-inherit">
-                  <app-call-hierarchy [resolver]="_this"></app-call-hierarchy>
-                </div>
-                <div class="split-pane-content-secondary hw-100 overflow-auto">
-                  <h4>Message searching</h4>
+              <ul class="nav nav-tabs">
+                <li class="active"><a data-toggle="tab" href="#jump">Jumping</a></li>
+                <li><a data-toggle="tab" href="#call">Call hierarchy</a></li>
+              </ul>
+
+              <div class="tab-content height-inherit overflow-auto" style="padding-bottom: 20px">
+                <div id="jump" class="tab-pane in active">
                   <app-file-message-search></app-file-message-search>
                   <app-jump></app-jump>
                 </div>
-              </vertical-split-pane>
+                <div id="call" class="tab-pane height-inherit" style="overflow: hidden">
+                  <app-call-hierarchy [resolver]="_this"></app-call-hierarchy>
+                </div>
+              </div>
             </div>
           </vertical-split-pane>
         </div>
