@@ -41,7 +41,7 @@
         </thead>
         <tbody>
         <tr *ngFor="let item of mf.data">
-          <td><a routerLink="/individualFiles/{{item.fileID}}">{{item.name}}</a></td>
+          <td><a routerLink="/individualFiles/{{item.id}}">{{item.name}}</a></td>
           <td *ngFor="let a of aggregates">
             {{item.sums[a] | number : '1.2-2'}}
           </td>

@@ -1,8 +1,12 @@
-import {Component, EventEmitter, Output, ViewChild} from '@angular/core';
-import {CodeService, CONTEXT_ALL} from '../code.service';
+import {Component, ViewChild} from '@angular/core';
 import {IActionMapping, TREE_ACTIONS, TreeComponent, TreeNode} from 'angular-tree-component';
-import {Landmark} from '../landmark';
+import * as CodeMirror from 'codemirror';
 import {ToastyService} from 'ng2-toasty';
+import {CallHierarchyComponent} from '../call-hierarchy/call-hierarchy.component';
+import {CodeService, CONTEXT_ALL} from '../code.service';
+import {Landmark} from '../landmark';
+import {SemanticNodeType, StructuralNodeType, TreeBuilder} from '../tree-builder';
+import {UIStateStore} from '../ui-state.service';
 import {Utility} from '../utility';
 
 const actionMapping: IActionMapping = {
@@ -15,8 +19,6 @@ const actionMapping: IActionMapping = {
   }
 };
 
-enum StructuralNodeType {Identifier, DescribedObject, Jump, Property}
-enum SemanticNodeType {Allocation, Call, AsyncListener, Property}
 
 @Component({
   selector: 'app-line-values',
@@ -24,17 +26,16 @@ enum SemanticNodeType {Allocation, Call, AsyncListener, Property}
   styleUrls: ['line-values.component.css']
 })
 export class LineValuesComponent {
-  @Output() jump: EventEmitter<Landmark> = new EventEmitter();
   @ViewChild(TreeComponent) tree: TreeComponent;
   contexts: DescribedContext[];
   filteredContexts: DescribedContext[];
-  nodes: any[] = [];
-  filteredNodes: any[] = [];
+  lineValueNodes: any[] = [];
+  filteredLineValueNodes: any[] = [];
   nodeType = StructuralNodeType;
   currentFile: FileID;
-  currentLine: number;
-  filterQuery: string;
-  private selectedContextValue: DescribedContext;
+  currentPosition: CodeMirror.Position;
+  contextFilterQuery: string;
+  private _context: DescribedContext;
 
   lineValueKinds: { value: LineValueKind, name: string, checked: boolean }[] = [
     {value: 'VARIABLE', name: 'Variable', checked: true},
@@ -53,75 +54,47 @@ export class LineValuesComponent {
   };
 
   constructor(private codeService: CodeService,
+              private uiStateStore: UIStateStore,
               private toastyService: ToastyService) {
-  }
-
-  drillAt(fileID: FileID, line: number, context?: DescribedContext) {
-    if (!fileID || !line) {
-      return;
-    }
-    this.currentFile = fileID;
-    this.currentLine = line;
-
-    const promises = [];
-    promises.push(this.codeService.getContexts(fileID, line).then((c: DescribedContext[]) => this.contexts = this.filteredContexts = c));
-    promises.push(this.getLineValuesAsTree(fileID, line).then((n: any[]) => this.nodes = n));
-
-    Promise.all(promises).then(() => {
-      if (this.contexts.length === 0) {
-        return;
-      }
-      this.selectedContext = (context) ? (this.contexts.find(c => c.id === context.id)) : this.contexts[0];
+    this.uiStateStore.file.subscribe((file: FileDescription) => this.currentFile = file.id);
+    this.uiStateStore.context.subscribe((context: DescribedContext) => this.selectedContext = context);
+    this.uiStateStore.cursorPosition.subscribe((position: CodeMirror.Position) => {
+      this.drillAt(position);
+      this.currentPosition = position
     });
-
-    this.refresh();
   }
 
   set selectedContext(context: DescribedContext) {
-    this.selectedContextValue = context;
+    this._context = context;
     this.filterValues();
   }
 
   get selectedContext(): DescribedContext {
-    return this.selectedContextValue;
+    return this._context;
+  }
+
+  drillAt(position: CodeMirror.Position, context?: DescribedContext) {
+    if (!this.currentFile) {
+      return;
+    }
+    const promises = [];
+    promises.push(this.codeService.getContexts(this.currentFile, position.line + 1)
+      .then((cs) => this.contexts = this.filteredContexts = cs));
+    promises.push(this.getLineValuesAsTree(this.currentFile, position.line + 1).then(n => this.lineValueNodes = n));
+    Promise.all(promises).then(() => {
+      if (this.contexts.length !== 0) {
+        this.selectedContext = (context) ? (this.contexts.find(c => c.id === context.id)) : this.contexts[0];
+      }
+    });
+    this.refresh();
   }
 
   jumpTo(file: FileID, line: number, context: DescribedContext) {
-    this.jump.emit(new Landmark(this.currentFile, this.currentLine, `lineValue (origin), ${this.selectedContext.rendering}`));
-    this.jump.emit(new Landmark(file, line, `lineValue (destination), ${context.rendering}`));
-    this.drillAt(file, line, context);
-  }
-
-  goRelatedLocation(forward: boolean): void {
-    if (!this.filteredNodes) {
-      return;
-    }
-
-    const value: LineValue = this.getLastLineValueOnLine();
-    if (!value) {
-      return;
-    }
-
-    this.codeService.getRelatedLocation(value.location.id, forward, 'LINE', true)
-      .then((loc: DescribedLocation[]) => {
-        if (loc.length < 1) {
-          this.toastyService.info(`No ${ (forward) ? 'forwards' : 'backwards'} related location for line ${this.currentLine}`);
-          return;
-        }
-        // TODO: Choose which location to go to!
-        const location = loc[0];
-        const context: DescribedContext = location['context'] || CONTEXT_ALL;
-        this.jumpTo(location.fileID, location.range.lineStart, context);
-      });
-  }
-
-  getLastLineValueOnLine(): LineValue {
-    if (this.filteredNodes.length === 0) {
-      return null;
-    }
-    // LineValue w/largest columnStart on line and in the selected context
-    return this.filteredNodes.reduce((acc: LineValue, value: LineValue) =>
-      (acc === undefined || value.location.range.columnStart > acc.location.range.columnStart) ? value : acc)
+    this.uiStateStore.addToJumpHistory(new Landmark(this.currentFile, this.currentPosition.line
+      , `lineValue (origin), ${this.selectedContext.rendering}`));
+    this.uiStateStore.addToJumpHistory(new Landmark(file, line, `lineValue (destination), ${context.rendering}`));
+    this.uiStateStore.changeFileAndPosition(file, {line: line - 1, ch: 0});
+    this.selectedContext = context;
   }
 
   filterContextsSemantically(expression: string): void {
@@ -129,12 +102,10 @@ export class LineValuesComponent {
       this.filteredContexts = this.contexts;
       return;
     }
-
     const value: LineValue = this.getLastLineValueOnLine();
     if (!value) {
       return;
     }
-
     this.codeService.getFilteredContexts(value.location.id, expression)
       .then((cts: DescribedContext[]) => this.filteredContexts = cts)
       .catch(err => {
@@ -145,23 +116,21 @@ export class LineValuesComponent {
   }
 
   filterValues() {
-    // Filter by selected context
+    // Filter by fileID context
     if (this.selectedContext === CONTEXT_ALL) {
-      this.filteredNodes = this.nodes.filter(n => !n.location.hasOwnProperty('context'));
+      this.filteredLineValueNodes = this.lineValueNodes.filter(n => !n.location.hasOwnProperty('context'));
     } else {
-      this.filteredNodes = this.nodes
+      this.filteredLineValueNodes = this.lineValueNodes
         .filter(n => n.location.hasOwnProperty('context') && n.location['context'].id === this.selectedContext.id);
     }
-
-    // Filter by selected kinds
+    // Filter by fileID kinds
     const selectedKinds = this.lineValueKinds.filter(k => k.checked).map(k => k.value);
-    this.filteredNodes = this.filteredNodes.filter(v => (selectedKinds.indexOf(v.kind) > -1));
+    this.filteredLineValueNodes = this.filteredLineValueNodes.filter(v => (selectedKinds.indexOf(v.kind) > -1));
   }
 
   getChildren(node: TreeNode): Promise<TreeNode[]> {
     const objectID = node.parent.data.id;
     let res: Promise<any[]>;
-
     switch (node.data.nodeTypeChildren) {
       case SemanticNodeType.Allocation:
         res = this.codeService.getAllocationLocations(objectID)
@@ -179,7 +148,7 @@ export class LineValuesComponent {
         const location = node.parent.parent.data.location;
         res = (location && location.id)
           ? this.codeService.getObjectProperties(objectID, location.id)
-            .then((props: DescribedProperties) => this.getSubtreeForProperties(props))
+            .then((props: DescribedProperties) => TreeBuilder.getSubtreeForProperties(props))
           : Promise.resolve([]);
         break;
       default:
@@ -215,10 +184,19 @@ export class LineValuesComponent {
       });
   }
 
-  refresh() {
+  private refresh() {
     if (this.tree) {
       this.tree.viewportComponent.setViewport();
     }
+  }
+
+  private getLastLineValueOnLine(): LineValue {
+    if (this.filteredLineValueNodes.length === 0) {
+      return null;
+    }
+    // LineValue w/largest columnStart on line and in the fileID context
+    return this.filteredLineValueNodes.reduce((acc: LineValue, value: LineValue) =>
+      (acc === undefined || value.location.range.columnStart > acc.location.range.columnStart) ? value : acc)
   }
 
   private getLineValuesAsTree(fileID: FileID, line: number): Promise<any[]> {
@@ -227,80 +205,7 @@ export class LineValuesComponent {
       .then((values: LineValue[]) => values.map((v: LineValue) => Object.assign(v, {
         nodeType: StructuralNodeType.Identifier,
         location: v.location,
-        children: v.value.values.map(value => this.getSubtreeForValue(value))
+        children: v.value.values.map(value => TreeBuilder.getSubtreeForValue(value))
       })));
-  }
-
-  private getSubtreeForValue(singleValue: SingleValue): any {
-    if (!singleValue.hasOwnProperty('id')) {
-      const primitive = <DescribedPrimitive> singleValue;
-      return {rendering: primitive.rendering};
-    }
-
-    const obj: DescribedObject = <DescribedObject> singleValue;
-    return Object.assign(obj, {
-      nodeType: StructuralNodeType.DescribedObject,
-      children: [
-        {
-          rendering: 'properties',
-          nodeTypeChildren: SemanticNodeType.Property,
-          hasChildren: true,
-        },
-        {
-          rendering: 'allocation locations',
-          nodeTypeChildren: SemanticNodeType.Allocation,
-          hasChildren: true
-        },
-        {
-          rendering: 'call locations',
-          nodeTypeChildren: SemanticNodeType.Call,
-          hasChildren: (obj.kind === 'FUNCTION')
-        },
-        {
-          rendering: 'async listener registrations',
-          nodeTypeChildren: SemanticNodeType.AsyncListener,
-          hasChildren: (obj.kind === 'FUNCTION')
-        }
-      ]
-    });
-  }
-
-  private getSubtreeForProperties(describedProps: DescribedProperties): any[] {
-    return [
-      {
-        rendering: 'prototype',
-        childrenSummary: this.getValueSummary(describedProps.prototype.values),
-        children: describedProps.prototype.values.map(v => this.getSubtreeForValue(v))
-      },
-      {
-        rendering: 'internal',
-        childrenSummary: this.getValueSummary(describedProps.internal.values),
-        children: describedProps.internal.values.map(v => this.getSubtreeForValue(v))
-      },
-      {
-        rendering: 'array',
-        childrenSummary: this.getValueSummary(describedProps.array.values),
-        children: describedProps.array.values.map(v => this.getSubtreeForValue(v))
-      },
-      {
-        rendering: 'nonArray',
-        childrenSummary: this.getValueSummary(describedProps.nonArray.values),
-        children: describedProps.nonArray.values.map(v => this.getSubtreeForValue(v))
-      },
-      {
-        rendering: 'properties',
-        isExpanded: true,
-        children: Object.keys(describedProps.properties).map(prop => ({
-          rendering: prop,
-          nodeType: StructuralNodeType.Property,
-          childrenSummary: this.getValueSummary(describedProps.properties[prop].values),
-          children: describedProps.properties[prop].values.map(v => this.getSubtreeForValue(v))
-        }))
-      }
-    ]
-  }
-
-  private getValueSummary(values: SingleValue[]): string {
-    return values.map(v => v['rendering']).join(',');
   }
 }

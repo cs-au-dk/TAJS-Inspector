@@ -1,8 +1,9 @@
-import {Component, EventEmitter, Input, Output, ViewChild} from '@angular/core';
-import {CodeService} from '../code.service';
+import {Component, HostListener, Input, ViewChild} from '@angular/core';
 import {IActionMapping, TREE_ACTIONS, TreeComponent, TreeNode} from 'angular-tree-component';
-import {Landmark} from '../landmark';
 import * as CodeMirror from 'codemirror';
+import {CodeService} from '../code.service';
+import {Landmark} from '../landmark';
+import {UIStateStore} from '../ui-state.service';
 
 const actionMapping: IActionMapping = {
   mouse: {
@@ -23,16 +24,11 @@ enum StructuralNodeType {ENCLOSING_FUNCTION, CALL_LOCATIONS}
 })
 export class CallHierarchyComponent {
   @ViewChild(TreeComponent) tree: TreeComponent;
-  @Output() jump: EventEmitter<Landmark> = new EventEmitter();
-
-  // TODO: COME UP WITH BETTER WAY - SHOULD BE EXTRACTED TO CODESERVICE?
   @Input() resolver: { resolve: ((number) => string) };
-
   nodeType = StructuralNodeType;
   nodes: any[] = [];
-  currentFile: FileID;
   currentPosition: CodeMirror.Position;
-
+  currentFile: FileID;
   treeOptions = {
     actionMapping,
     getChildren: (n) => this.getChildren(n),
@@ -41,14 +37,13 @@ export class CallHierarchyComponent {
     nodeHeight: 23
   };
 
-  constructor(private codeService: CodeService) {
+  constructor(private codeService: CodeService, private uiStateStore: UIStateStore) {
   }
 
-  drillAt(fileID: FileID, position: CodeMirror.Position): void {
-    this.currentFile = fileID;
-    this.currentPosition = position;
-
-    this.codeService.getPositionalLocationID(fileID, position.line + 1, position.ch)
+  drill(): void {
+    this.currentFile = this.uiStateStore.getCurrentFile().id;
+    this.currentPosition = this.uiStateStore.getCurrentPosition();
+    this.codeService.getPositionalLocationID(this.currentFile, this.currentPosition.line + 1, this.currentPosition.ch)
       .then((opt: Optional<DescribedLocation>) => {
         if (!opt.value) {
           this.nodes = [];
@@ -62,7 +57,6 @@ export class CallHierarchyComponent {
   getChildren(node: TreeNode): Promise<TreeNode[]> {
     const objectID = node.data.objectID;
     const locationID = node.data.id;
-
     if (node.data.nodeType === StructuralNodeType.CALL_LOCATIONS) {
       return this.enclosingFunction(locationID);
     } else if (node.data.nodeType === StructuralNodeType.ENCLOSING_FUNCTION) {
@@ -86,7 +80,7 @@ export class CallHierarchyComponent {
 
   private callLocations(objectID: ObjectID): Promise<any[]> {
     return this.codeService.getCallLocations(objectID)
-      .then((locs: ContextSensitiveDescribedLocation[]) => locs.map(l => Object.assign({
+      .then((ls: ContextSensitiveDescribedLocation[]) => ls.map(l => Object.assign({
         rendering: this.resolver.resolve(l.range.lineStart),
         nodeType: StructuralNodeType.CALL_LOCATIONS,
         hasChildren: true
@@ -100,8 +94,17 @@ export class CallHierarchyComponent {
   }
 
   jumpTo(file: FileID, line: number, context: DescribedContext) {
-    this.jump.emit(new Landmark(this.currentFile, this.currentPosition.line, `call hierarchy (origin)`));
-    this.jump.emit(new Landmark(file, line, `call hierarchy (destination)`));
+    this.uiStateStore.changeFileAndPosition(file, {line: line - 1, ch: 0});
+    this.uiStateStore.changeContext(context);
+    this.uiStateStore.addToJumpHistory(new Landmark(this.currentFile, this.currentPosition.line, `call hierarchy (origin)`));
+    this.uiStateStore.addToJumpHistory(new Landmark(file, line, `call hierarchy (destination)`));
+  }
+
+  @HostListener('window:keydown', ['$event'])
+  windowKeyDown(event: KeyboardEvent) {
+    if (event.ctrlKey && event.keyCode === 77) { // CTRL + M
+      this.drill();
+    }
   }
 
 }

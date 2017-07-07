@@ -1,13 +1,9 @@
-import {AfterViewInit, Component, HostListener, ViewChild} from '@angular/core';
-import {CodeService} from '../code.service';
+import {AfterViewInit, Component, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {Landmark} from '../landmark';
-import {FileEditorComponent} from '../file-editor/file-editor.component';
-import {LineValuesComponent} from '../line-values/line-values.component';
-import * as CodeMirror from 'codemirror';
-import {FileJumpComponent} from '../file-jump/file-jump.component';
-import {CallHierarchyComponent} from '../call-hierarchy/call-hierarchy.component';
+import {CodeService} from '../code.service';
+import {EditorComponent} from '../editor/editor.component';
 import {SettingsService} from '../settings.service';
+import {UIStateStore} from '../ui-state.service';
 
 @Component({
   selector: 'app-file-viewer',
@@ -17,62 +13,32 @@ import {SettingsService} from '../settings.service';
   ]
 })
 export class FileViewComponent implements AfterViewInit {
-  @ViewChild(FileEditorComponent) editor: FileEditorComponent;
-  @ViewChild(LineValuesComponent) lineValues: LineValuesComponent;
-  @ViewChild(FileJumpComponent) fileJump: FileJumpComponent;
-  @ViewChild(CallHierarchyComponent) callHierarchy: CallHierarchyComponent;
-
+  @ViewChild(EditorComponent) editor: EditorComponent;
   files: FileDescription[];
-  selectedFile: FileDescription = <FileDescription>{id: '', name: '', content: ''};
+  currentFile: FileID;
   filterQuery: string;
-  currentPosition: CodeMirror.Position;
   _this = this;
-  isVisibleCallHierarchy = false;
 
   constructor(private codeService: CodeService,
               private settingsService: SettingsService,
-              private route: ActivatedRoute) {
+              private route: ActivatedRoute,
+              public uiStateStore: UIStateStore) {
+    this.uiStateStore.file.subscribe(file => this.currentFile = file.id);
   }
 
   ngAfterViewInit() {
     this.codeService.getFiles().then((files: FileDescription[]) => {
       this.files = files;
       this.route.params.subscribe(params => {
-        const param = params['fileID'];
+        const param = params['id'];
         const file = param ? this.files.find(f => f.id === param) : null;
-        this.selectFile(file ? file : this.files[0]);
+        this.uiStateStore.changeFile(file ? file : this.files[0]);
       });
     });
   }
 
-  selectFile(file: FileDescription) {
-    this.selectedFile = file;
-  }
-
-  jumpTo(destination: Landmark, remember = false) {
-    if (destination.fileID !== this.selectedFile.id) {
-      this.selectFile(this.files.find(f => f.id === destination.fileID));
-    }
-    if (remember) {
-      this.fileJump.addToHistory(destination);
-    }
-    this.editor.jumpTo(destination.line);
-  }
-
   refresh() {
     this.editor.refresh();
-  }
-
-  drill(position: CodeMirror.Position) {
-    if (this.isVisibleLineValues) {
-
-    } this.lineValues.drillAt(this.selectedFile.id, position.line + 1);
-    this.currentPosition = position;
-  }
-
-  showCallHierarchy() {
-    this.isVisibleCallHierarchy = true;
-    this.callHierarchy.drillAt(this.selectedFile.id, this.currentPosition);
   }
 
   resolve(line: number) {
@@ -85,13 +51,6 @@ export class FileViewComponent implements AfterViewInit {
 
   set isVisibleLineValues(visible: boolean) {
     this.settingsService.setVisibilityLineValueToolbar(visible);
-  }
-
-  @HostListener('window:keydown', ['$event'])
-  windowKeyDown(event: KeyboardEvent) {
-    if (event.ctrlKey && event.keyCode === 77) { // CTRL + M
-      this.showCallHierarchy();
-    }
   }
 
 }

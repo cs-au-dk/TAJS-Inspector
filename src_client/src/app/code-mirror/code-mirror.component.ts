@@ -22,7 +22,7 @@ export class CodeMirrorComponent implements AfterViewInit, ControlValueAccessor 
   @Input() config;
   @Output() change = new EventEmitter();
   @ViewChild('host') host;
-  @Output() instance = null;
+  @Output() instance: CodeMirror.EditorFromTextArea = null;
   _value = '';
 
   constructor() {

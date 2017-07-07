@@ -1,10 +1,10 @@
 export class Landmark {
-  fileID: FileID;
+  file: FileID;
   line: number;
   description: string;
 
-  constructor(fileID: FileID, line: number, description: string) {
-    this.fileID = fileID;
+  constructor(file: FileID, line: number, description: string) {
+    this.file = file;
     this.line = line;
     this.description = description;
   }

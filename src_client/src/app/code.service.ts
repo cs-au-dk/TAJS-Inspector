@@ -2,21 +2,31 @@ import {Injectable} from '@angular/core';
 import 'rxjs/add/operator/toPromise';
 import {ApiService} from './api.service';
 import {Dictionary} from './dictionary';
-import {GutterSums} from './gutter-sums';
 import {FileIDDictionary} from './file-id-dictionary';
+import {GutterSums} from './gutter-sums';
 
 export const CONTEXT_ALL = {rendering: 'all', id: null};
 
 @Injectable()
 export class CodeService {
+  private availableGuttersCache;
+  private filesCache;
 
   constructor(private api: ApiService) {
   }
 
   getFiles(): Promise<FileDescription[]> {
+    if (this.filesCache) {
+      return Promise.resolve(this.filesCache);
+    }
     return this.api.getFileIDs()
       .then((ids: FileID[]) => Promise
-        .all(ids.map(id => this.api.getFileDescription(id))));
+        .all(ids.map(id => this.api.getFileDescription(id))))
+      .then(files => this.filesCache = files);
+  }
+
+  getFile(fileID: FileID): Promise<FileDescription> {
+    return this.getFiles().then(files => files.find(f => f.id === fileID));
   }
 
   getAllGutters(): Promise<FileIDDictionary<Gutter<any>[]>> {
@@ -30,10 +40,16 @@ export class CodeService {
     return this.getAllGutters().then(all => all[fileID.toString()]);
   }
 
-  getAvailableGutters(): Promise<Gutter<any>[]> {
+  getAvailableGutters(): Promise<{ kind: GutterKind; name: string; description: string; }[]> {
+    if (this.availableGuttersCache) {
+      return Promise.resolve(this.availableGuttersCache);
+    }
+
     return this.api.getFileIDs()
       .then(ids => this.getGutters(ids[0]))
-      .then((gs: Gutter<any>[]) => gs.sort((a, b) => a.name.localeCompare(b.name)));
+      .then((gs: Gutter<any>[]) => gs.map(g => ({kind: g.kind, name: g.name, description: g.description})))
+      .then((gs: { kind: GutterKind; name: string; description: string; }[]) => gs.sort((a, b) => a.name.localeCompare(b.name)))
+      .then(gs => this.availableGuttersCache = gs);
   }
 
   getLineValues(fileID: FileID, line: number): Promise<LineValue[]> {
@@ -149,8 +165,9 @@ export class CodeService {
     return res;
   }
 
-  private sortLines(dictionary: FileIDDictionary<Gutter<any>[]>): { [property: string]: [{ fileID: string, line: number
-    , value: number }] } {
+  private sortLines(dictionary: FileIDDictionary<Gutter<any>[]>): {
+    [property: string]: [{ fileID: string, line: number, value: number }]
+  } {
     const temp = {};
     Object.keys(dictionary).forEach(fileID => {
       dictionary[fileID].forEach(gutter => {

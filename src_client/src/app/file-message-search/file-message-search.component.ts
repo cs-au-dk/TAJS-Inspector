@@ -1,36 +1,28 @@
-import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
-import {Landmark} from '../landmark';
+import {Component} from '@angular/core';
 import {CodeService} from '../code.service';
+import {UIStateStore} from '../ui-state.service';
 
 @Component({
   selector: 'app-file-message-search',
   templateUrl: './file-message-search.component.html',
   styleUrls: ['./file-message-search.component.css']
 })
-export class FileMessageSearchComponent implements OnChanges, OnInit {
-  @Input() selectedFile: FileDescription;
-  @Output() jump: EventEmitter<Landmark> = new EventEmitter();
-
+export class FileMessageSearchComponent {
   private messageGutter: Gutter<LineMessage[]>;
   private queryIndex: number;
-  private initialized: boolean;
   query: string;
   linesMatchingQuery: number[] = [];
 
-  constructor(private codeService: CodeService) {
-  }
-
-  ngOnInit(): void {
-    this.initialized = true;
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if (!this.initialized || !this.selectedFile) {
-      return;
-    }
-
-    this.codeService.getGutters(this.selectedFile.id)
-      .then((gutters: Gutter<any>[]) => this.messageGutter = gutters.find(g => g.name === 'Messages'));
+  constructor(private codeService: CodeService, private uiStateStore: UIStateStore) {
+    this.uiStateStore.file.subscribe(file => {
+      this.queryIndex = 0;
+      this.query = '';
+      this.codeService.getGutters(file.id).then((gutters: Gutter<any>[]) => {
+        if (gutters) {
+          this.messageGutter = gutters.find(g => g.name === 'Messages')
+        }
+      })
+    });
   }
 
   search(query: string): void {
@@ -65,8 +57,10 @@ export class FileMessageSearchComponent implements OnChanges, OnInit {
     if (this.linesMatchingQuery.length < 1) {
       return;
     }
-    this.jump.emit(new Landmark(this.selectedFile.id, this.linesMatchingQuery[this.queryIndex]
-      , `search '${this.query}' (${this.queryIndex})`));
+    const match = this.linesMatchingQuery[this.queryIndex];
+    this.uiStateStore.changeCursorPosition({line: match - 1, ch: 0});
+    // this.jump.emit(new Landmark(this.selectedFile.file, this.linesMatchingQuery[this.queryIndex]
+    //   , `search '${this.query}' (${this.queryIndex})`));
   }
 
   private stringMatchLowercase(query: string, text: string): boolean {

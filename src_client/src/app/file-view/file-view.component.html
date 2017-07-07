@@ -19,50 +19,33 @@
               <ul class="list-group">
                 <li *ngFor="let file of (files | dataFilter: filterQuery:'name')"
                     title="{{ file.name }} ({{file.id}})"
-                    (click)="selectFile(file)"
-                    [class.selected]="file === selectedFile"
+                    (click)="uiStateStore.changeFile(file)"
+                    [class.selected]="file.id === currentFile"
                     class="list-group-item">
                   <span class="overflow-ellipsis"><span class="glyphicon glyphicon-file"></span> {{ file.name }} ({{file.id}})</span>
                 </li>
               </ul>
             </div>
-
-            <h4>Toolbars</h4>
-            <div class="checkbox">
-              <label><input type="checkbox" [(ngModel)]="isVisibleLineValues">Lines values</label>
-            </div>
-            <div class="checkbox">
-              <label><input type="checkbox" [(ngModel)]="isVisibleCallHierarchy">Call hierarchy</label>
-            </div>
-            <button type="button" class="btn btn-default text-center overflow-ellipsis" style="width:100%" (click)="showCallHierarchy()">
-              Show call hierarchy at line
-            </button>
           </div>
         </div>
         <div class="split-pane-content-secondary h-100">
           <vertical-split-pane [primary-component-initialratio]="0.6"
                                [local-storage-key]="'lineAnalysis3'">
             <div class="split-pane-content-primary h-100 overflow-auto " style="padding-right: 5px;">
-              <app-file-editor [selectedFile]="selectedFile"
-                               (editorClick)="drill($event)">
-              </app-file-editor>
+              <app-file-editor></app-file-editor>
             </div>
             <div class="split-pane-content-secondary height-inherit" style="overflow: hidden">
               <vertical-split-pane [primary-component-initialratio]="0.5"
                                    [local-storage-key]="'lineAnalysis4'"
                                    [secondary-component-minsize]="100"
-                                   [primary-component-minsize]="100"
-                                   [primary-component-toggled-off]="!isVisibleCallHierarchy">
+                                   [primary-component-minsize]="100">
                 <div class="split-pane-content-primary height-inherit">
-                  <app-call-hierarchy [resolver]="_this"
-                                      (jump)="jumpTo($event, true)"></app-call-hierarchy>
+                  <app-call-hierarchy [resolver]="_this"></app-call-hierarchy>
                 </div>
                 <div class="split-pane-content-secondary hw-100 overflow-auto">
                   <h4>Message searching</h4>
-                  <app-file-message-search [selectedFile]="selectedFile" (jump)="jumpTo($event, true)">
-                  </app-file-message-search>
-                  <app-jump [selectedFile]="selectedFile" (jump)="jumpTo($event)">
-                  </app-jump>
+                  <app-file-message-search></app-file-message-search>
+                  <app-jump></app-jump>
                 </div>
               </vertical-split-pane>
             </div>
@@ -73,7 +56,7 @@
   </div>
   <div class="split-pane-content-secondary h-100 component overflow-auto">
     <div class="lower">
-      <app-line-values (jump)="jumpTo($event, true)"></app-line-values>
+      <app-line-values></app-line-values>
     </div>
   </div>
 </horizontal-split-pane>

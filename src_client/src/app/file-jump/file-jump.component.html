@@ -34,31 +34,28 @@
   </div>
 </div>
 <h5>Jump history
-  <span class="glyphicon glyphicon-trash" style="cursor:pointer" (click)="jumpHistory = []" title="Clear history"></span>
-  <span class="glyphicon glyphicon-chevron-left" style="cursor:pointer" (click)="goHistoryBack()" title="Click to jump backwards"></span>
-  <span class="glyphicon glyphicon-chevron-right" style="cursor:pointer" (click)="goHistoryForwards()" title="Click to jump forwards"></span>
+  <span class="glyphicon glyphicon-trash" style="cursor:pointer" (click)="uiStateStore.emptyJumpHistory()" title="Clear history"></span>
+  <span class="glyphicon glyphicon-chevron-left" style="cursor:pointer" (click)="goHistoryBack()"
+        title="Click to jump backwards"></span>
+  <span class="glyphicon glyphicon-chevron-right" style="cursor:pointer" (click)="goHistoryForwards()"
+        title="Click to jump forwards"></span>
 </h5>
-<div class="list-group" *ngIf="jumpHistory.length > 0">
-  <a *ngFor="let landmark of jumpHistory | slice: 0:10; let i = index"
-     class="list-group-item"
-     (click)="doJump(landmark)">
-    <div class="overflow-ellipsis"
-         [class.text-primary]="i === (historyBackLevel - 1)"
-         title="{{landmark.description}} - line {{landmark.line}}: {{landmark.fileID}}">
-      {{landmark.description}} - line {{landmark.line}}: {{landmark.fileID}}
-    </div>
-  </a>
-</div>
-<i *ngIf="jumpHistory.length === 0">Empty</i>
-
+<a *ngFor="let landmark of uiStateStore.jumpHistory | async | slice: 0:10; let i = index"
+   class="list-group-item"
+   (click)="doJump(landmark)">
+  <div class="overflow-ellipsis"
+       [class.text-primary]="i === (historyBackLevel - 1)"
+       title="{{landmark.description}} - line {{landmark.line}}: {{landmark.id}}">
+    {{landmark.description}} - {{landmark.file}}:{{landmark.line}}
+  </div>
+</a>
 <h5>Bookmarks</h5>
-<div class="list-group" *ngIf="bookmarks.length > 0">
-  <a *ngFor="let landmark of bookmarks"
+<div class="list-group">
+  <a *ngFor="let landmark of uiStateStore.bookmarks | async"
      class="list-group-item"
      (click)="doJump(landmark)">
-    <div class="overflow-ellipsis" title="line {{landmark.line}} - {{landmark.fileID}}: {{landmark.description}}">
-      line {{landmark.line}} - {{landmark.fileID}}: {{landmark.description}}
+    <div class="overflow-ellipsis" title="line {{landmark.line}} - {{landmark.id}}: {{landmark.description}}">
+      line {{landmark.line}} - {{landmark.id}}: {{landmark.description}}
     </div>
   </a>
 </div>
-<i *ngIf="bookmarks.length==0">Empty</i>

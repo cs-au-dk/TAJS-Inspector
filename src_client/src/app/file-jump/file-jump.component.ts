@@ -1,10 +1,10 @@
-import {Component, EventEmitter, HostListener, Input, OnInit, Output} from '@angular/core';
+import {Component, HostListener, OnInit} from '@angular/core';
 import {isUndefined} from 'util';
-import {Landmark} from '../landmark';
 import {CodeService} from '../code.service';
 import {Dictionary} from '../dictionary';
-import {BookmarkService} from '../bookmark.service';
+import {Landmark} from '../landmark';
 import {SettingsService} from '../settings.service';
+import {UIStateStore} from '../ui-state.service';
 import {Utility} from '../utility';
 
 enum JUMP_DIRECTION {
@@ -16,36 +16,29 @@ enum JUMP_DIRECTION {
   styleUrls: ['file-jump.component.css']
 })
 export class FileJumpComponent implements OnInit {
-  @Input() selectedFile: FileDescription;
-  @Output() jump: EventEmitter<Landmark> = new EventEmitter();
   JUMP_DIRECTION = JUMP_DIRECTION;
-
   sortedLines: Dictionary<[{ fileID: string, line: number, value: number }]>;
-  bookmarks: Landmark[] = [];
   jumpGutter: string;
   jumpIndex = 0;
-  jumpHistory: Landmark[] = [];
   visibleGutters: string[];
   selectedGutter;
-
   historyBackLevel = 0;
 
   constructor(private codeService: CodeService,
-              private boookmarkService: BookmarkService,
-              private settingsService: SettingsService) {
+              private settingsService: SettingsService,
+              public uiStateStore: UIStateStore) {
   }
 
   ngOnInit() {
-    // 'Hack' together with host listener on window:popstate for overriding browser back
-    history.pushState(null, document.title, location.href);
-
     const storedGutters = this.settingsService.getVisibleGutters();
     this.codeService.getAvailableGutters()
       .then(availableGutters => this.visibleGutters = availableGutters
         .map(g => g.name)
         .filter(g => storedGutters.indexOf(g) !== -1));
     this.codeService.getSortedLineData().then((s: Dictionary<any>) => this.sortedLines = s);
-    this.boookmarkService.subscribe(b => this.bookmarks = b);
+
+    // 'Hack' together with host listener on window:popstate for overriding browser back
+    history.pushState(null, document.title, location.href);
   }
 
   setJumpGutter(gutter: string) {
@@ -68,50 +61,36 @@ export class FileJumpComponent implements OnInit {
     }
     if (direction === JUMP_DIRECTION.DOWN) {
       this.jumpIndex++;
-    }
-    if (direction === JUMP_DIRECTION.UP) {
+    } else if (direction === JUMP_DIRECTION.UP) {
       this.jumpIndex = Math.max(this.jumpIndex - 1, 0);
     }
-
     this.doJump();
   }
 
   doJump(landmark?: Landmark) {
-    if (!this.jumpGutter) {
-      return;
-    }
-
     const destination = (landmark) ? landmark : new Landmark(
       <FileID>this.sortedLines[this.jumpGutter][this.jumpIndex].fileID
       , this.sortedLines[this.jumpGutter][this.jumpIndex].line
       , `${this.jumpGutter} (${this.jumpIndex})`);
-
-    this.jump.emit(destination);
+    this.uiStateStore.changeFileAndPosition(destination.file, {line: destination.line - 1, ch: 0});
     if (!landmark) {
-      this.addToHistory(destination);
+      this.uiStateStore.addToJumpHistory(destination);
     }
-  }
-
-  addToHistory(landmark: Landmark) {
-    const l = this.jumpHistory[0];
-    if (l && l.fileID === landmark.fileID && l.line === landmark.line && l.description === landmark.description) {
-      return;
-    }
-
-    this.jumpHistory.unshift(landmark)
   }
 
   goHistoryBack() {
-    if (this.jumpHistory[this.historyBackLevel]) {
-      this.doJump(this.jumpHistory[this.historyBackLevel]);
+    const jumpHistory = this.uiStateStore.getCurrentJumpHistory();
+    if (jumpHistory[this.historyBackLevel]) {
+      this.doJump(jumpHistory[this.historyBackLevel]);
       this.historyBackLevel++;
     }
   }
 
   goHistoryForwards() {
-    if (this.jumpHistory[this.historyBackLevel - 1]) {
+    const jumpHistory = this.uiStateStore.getCurrentJumpHistory();
+    if (jumpHistory[this.historyBackLevel - 1]) {
       this.historyBackLevel--;
-      this.doJump(this.jumpHistory[this.historyBackLevel - 1]);
+      this.doJump(jumpHistory[this.historyBackLevel - 1]);
     }
   }
 
@@ -126,7 +105,6 @@ export class FileJumpComponent implements OnInit {
     if (!event.ctrlKey) {
       return;
     }
-
     switch (event.keyCode) {
       case 38: // ctrl + arrow-up
         this.doJumpDirection(JUMP_DIRECTION.UP);

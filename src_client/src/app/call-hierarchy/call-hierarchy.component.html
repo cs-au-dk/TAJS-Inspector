@@ -1,6 +1,11 @@
 <div class="panel panel-default">
   <div class="panel-heading">
-    Call hierarchy (l: {{currentPosition?.line + 1}}:{{currentPosition?.ch}})
+    Call hierarchy (line: {{currentPosition?.line}}:{{currentPosition?.ch}})
+    <button class="btn btn-default btn-sm pull-right"
+            (click)="drill()"
+            title="Show call hierarchy on line (CTRL + M)">
+      show call hierarchy
+    </button>
   </div>
   <div class="panel-body" style="padding: 0">
 
@@ -12,7 +17,7 @@
         <ng-template #treeNodeTemplate let-node let-index="index">
           <span class="code">{{resolver.resolve(node.data.range.lineStart)}}</span>
           <span class="text-muted">
-        @ {{node.data.fileID}}:{{node.data.range.lineStart}}:{{node.data.range.columnStart}}"
+        @ {{node.data.id}}:{{node.data.range.lineStart + 1}}:{{node.data.range.columnStart}}"
       </span>
           <span class="glyphicon glyphicon-share-alt text-primary baseline"
                 title="jump to location"
