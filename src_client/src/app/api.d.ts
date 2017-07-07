@@ -1,4 +1,4 @@
-// Generated using typescript-generator version 1.19.294 on 2017-06-21 11:09:13.
+// Generated using typescript-generator version 1.19.294 on 2017-07-07 15:24:02.
 
 interface Optional<T> {
     value: T;
@@ -30,8 +30,9 @@ interface LineMap<T> {
 interface LineMessage {
     sourceRange: SourceRange;
     message: string;
-    severity: MessageSeverity;
-    status: MessageStatus;
+    level: MessageLevel;
+    source: MessageSource;
+    certainty: Optional<MessageCertainty>;
 }
 
 interface LineValue {
@@ -117,8 +118,10 @@ type GutterKind = "NUMBER" | "STRING";
 
 type LineValueKind = "UNKNOWN" | "VARIABLE" | "REGISTER" | "FIXED_PROPERTY" | "DYNAMIC_PROPERTY";
 
-type MessageSeverity = "TAJS_ERROR" | "HIGH" | "MEDIUM_IF_CERTAIN_NONE_OTHERWISE" | "MEDIUM" | "LOW" | "TAJS_META" | "TAJS_UNSOUNDNESS";
+type MessageCertainty = "CERTAIN" | "MAYBE";
 
-type MessageStatus = "CERTAIN" | "MAYBE" | "INFO" | "NONE";
+type MessageLevel = "INFO" | "WARN" | "ERROR";
+
+type MessageSource = "ANALYSIS_BEHAVIOR" | "ANALYSIS_RESULT";
 
 type ObjectKind = "OBJECT" | "FUNCTION" | "ARRAY" | "STRING" | "BOOLEAN" | "NUMBER" | "REGEXP" | "DATE" | "ERROR" | "MATH" | "ACTIVATION" | "ARGUMENTS";

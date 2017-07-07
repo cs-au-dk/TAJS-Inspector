@@ -162,13 +162,14 @@ export class EditorComponent implements AfterViewInit {
     for (const m of messages) {
       const lineStart = m.sourceRange.lineStart - 1;
       const chStart = m.sourceRange.columnStart;
-      const className = `issue ${m.severity} ${m.status}`;
+      const certainty = (m.certainty) ? m.certainty.value : '';
+      const className = `issue ${m.level} ${certainty}`;
 
       const token = this.cm.instance.getTokenAt({line: lineStart, ch: chStart});
       this.cm.instance.getDoc().markText(
         {line: lineStart, ch: chStart - 1}, // start draw
         {line: lineStart, ch: chStart + token.string.length - 1}, // end draw
-        {className: className, title: `${m.status}:  ${m.message}`}
+        {className: className, title: `${certainty}:  ${m.message} (${m.source})`}
       );
     }
   }

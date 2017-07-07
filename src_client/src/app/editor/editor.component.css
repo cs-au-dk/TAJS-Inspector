@@ -60,19 +60,15 @@
   text-decoration: none;
 }
 
-.issue.TAJS_ERROR, .issue.TAJS_META {
-  border-color: #ff6de8;
-}
-
-.issue.HIGH {
+.issue.ERROR {
   border-color: #ff0000;
 }
 
-.issue.MEDIUM {
+.issue.WARN {
   border-color: #FFD700;
 }
 
-.issue.LOW {
+.issue.INFO {
   border-color: #00ff00;
 }
 
@@ -86,8 +82,4 @@
 
 .issue.INFO {
   border-bottom-style: dotted;
-}
-
-.issue.NONE {
-  border-bottom-style: double;
 }
