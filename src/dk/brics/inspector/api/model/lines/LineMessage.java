@@ -1,5 +1,6 @@
 package dk.brics.inspector.api.model.lines;
 
+import dk.brics.inspector.api.model.Optional;
 import dk.brics.inspector.api.model.locations.SourceRange;
 
 /**
@@ -11,14 +12,17 @@ public class LineMessage {
 
     public final String message;
 
-    public final MessageSeverity severity;
+    public final MessageLevel level;
 
-    public final MessageStatus status;
+    public final MessageSource source;
 
-    public LineMessage(SourceRange sourceRange, String message, MessageSeverity severity, MessageStatus status) {
+    public final Optional<MessageCertainty> certainty;
+
+    public LineMessage(SourceRange sourceRange, String message, MessageLevel level, MessageSource source, Optional<MessageCertainty> certainty) {
         this.sourceRange = sourceRange;
         this.message = message;
-        this.severity = severity;
-        this.status = status;
+        this.level = level;
+        this.source = source;
+        this.certainty = certainty;
     }
 }
