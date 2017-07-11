@@ -47,6 +47,27 @@ The jar-file also contains the (compiled) client side code.
 
 The jar-file needs to be run in an environment with its dependencies present (see [build.gradle](build.gradle)).
 
+## Notes for TAJS development
+
+### Runtime
+ 
+Build the project and copy the jar to TAJS/lib:
+
+```bash
+$ ./simple-build.sh
+$ cp dist/inspector.jar ~/tajs/lib
+```
+
+### Javadoc
+
+Use gradle to create javadoc:
+```bash
+$ ./gradlew javadoc
+$ ls build/docs/javadoc/
+```
+
+
+
 ## Generalization note 
 
 Abstract the remaining TAJS-specific parts to get an inspector that is independent of TAJS (and JavaScript):
