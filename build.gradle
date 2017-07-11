@@ -33,6 +33,9 @@ buildscript {
     }
 }
 
+task generateApiDocs(type: Javadoc) {
+    source = sourceSets.main.allJava
+}
 generateTypeScript {
     outputFile = 'src_client/src/app/api.d.ts'
     classPatterns = [
