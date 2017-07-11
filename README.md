@@ -30,7 +30,7 @@ This will start the server, and open the client-side in a browser window.
 
 Implementors of [InspectorAPI](src/dk/brics/inspector/api/InspectorAPI.java)-instances should be aware of the following:
 
-- the server is multi-threaded, and does not attempt to synchronize accesses to the InspectorAPI. The InspectorAPI implementations must be thread safe.
+- the InspectorAPI methods should be thread safe (the server is multi-threaded, and does not attempt to synchronize accesses to the InspectorAPI).
 - the InspectorAPI methods should be idempotent   
                  
 ## Building
