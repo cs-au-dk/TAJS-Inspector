@@ -4,9 +4,9 @@ import java.util.Set;
 
 /**
  * Configuration options of an analysis.
- * // TODO support simpler, less TAJS-specific abstraction: 'Map<String, String>'
  */
 public class OptionData {
+    // TODO support simpler, less TAJS-specific abstraction: 'Map<String, String>'
 
     public final BoxedOptionValues options;
 

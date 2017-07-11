@@ -71,9 +71,9 @@ public interface InspectorAPI {
      * Navigates the dataflow of the analysis.
      *
      * @param locationID      location to navigate from.
-     * @param forwards        direction to navigate in (true -> forwards, false -> backwards).
+     * @param forwards        direction to navigate in (true: forwards, false: backwards).
      * @param kind            step-size of the navigation.
-     * @param intraProcedural scope of the navigation (true -> limit navigation to the enclosing function of the given location: stopping at function entry/exit and skipping intermediary function calls).
+     * @param intraProcedural scope of the navigation (true: limit navigation to the enclosing function of the given location: stopping at function entry/exit and skipping intermediary function calls).
      * @return locations matching the query.
      */
     Set<? extends DescribedLocation> getRelatedLocations(LocationID locationID, boolean forwards, RelatedLocationKind kind, boolean intraProcedural);
