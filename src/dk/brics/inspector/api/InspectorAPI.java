@@ -11,7 +11,7 @@ import dk.brics.inspector.api.model.locations.ContextSensitiveDescribedLocation;
 import dk.brics.inspector.api.model.locations.DescribedContext;
 import dk.brics.inspector.api.model.locations.DescribedLocation;
 import dk.brics.inspector.api.model.locations.FileDescription;
-import dk.brics.inspector.api.model.options.OptionData;
+import dk.brics.inspector.api.model.OptionData;
 import dk.brics.inspector.api.model.values.DescribedProperties;
 
 import java.util.Optional;

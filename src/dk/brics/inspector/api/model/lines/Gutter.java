@@ -14,7 +14,7 @@ public class Gutter<T> {
     public final LineMap<T> data;
 
     public Gutter(GutterKind kind, String name, String description, LineMap<T> data) {
-        this.kind = kind; // TODO enforce type consistency
+        this.kind = kind;
         this.name = name;
         this.description = description;
         this.data = data;
