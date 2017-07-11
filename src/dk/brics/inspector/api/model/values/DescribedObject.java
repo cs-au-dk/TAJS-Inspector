@@ -9,13 +9,13 @@ public class DescribedObject implements SingleValue {
 
     public final String rendering;
 
-    public final ObjectKind kind;
+    public final boolean invokable;
 
     public final ObjectID id;
 
-    public DescribedObject(String rendering, ObjectKind kind, ObjectID id) {
+    public DescribedObject(String rendering, boolean invokable, ObjectID id) {
         this.rendering = rendering;
-        this.kind = kind;
+        this.invokable = invokable;
         this.id = id;
     }
 
@@ -26,15 +26,15 @@ public class DescribedObject implements SingleValue {
 
         DescribedObject that = (DescribedObject) o;
 
+        if (invokable != that.invokable) return false;
         if (rendering != null ? !rendering.equals(that.rendering) : that.rendering != null) return false;
-        if (kind != that.kind) return false;
         return id != null ? id.equals(that.id) : that.id == null;
     }
 
     @Override
     public int hashCode() {
         int result = rendering != null ? rendering.hashCode() : 0;
-        result = 31 * result + (kind != null ? kind.hashCode() : 0);
+        result = 31 * result + (invokable ? 1 : 0);
         result = 31 * result + (id != null ? id.hashCode() : 0);
         return result;
     }
