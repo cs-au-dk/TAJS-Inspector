@@ -35,6 +35,7 @@ buildscript {
 
 task generateApiDocs(type: Javadoc) {
     source = sourceSets.main.allJava
+    title = 'TAJS Inspector API documentation'
 }
 generateTypeScript {
     outputFile = 'src_client/src/app/api.d.ts'
