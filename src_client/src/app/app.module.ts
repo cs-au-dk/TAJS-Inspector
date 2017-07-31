@@ -22,11 +22,12 @@ import {FileViewComponent} from './file-view/file-view.component';
 import {LineValuesComponent} from './line-values/line-values.component';
 import {ModalComponent} from './modal/modal.component';
 import {OverviewComponent} from './overview/overview.component';
+import {RelatedLocationsComponent} from './related-locations/related-locations.component';
 import {SettingsModalComponent} from './settings-modal/settings-modal.component';
 import {SettingsService} from './settings.service';
 import {ShortcutModalComponent} from './shortcut-modal/shortcut-modal.component';
 import {UIStateStore} from './ui-state.service';
-import { RelatedLocationsComponent } from './related-locations/related-locations.component';
+import {KeysPipe} from './keys-pipe.pipe';
 
 @NgModule({
   declarations: [
@@ -44,7 +45,8 @@ import { RelatedLocationsComponent } from './related-locations/related-locations
     FileMessageSearchComponent,
     EllipsisPipe,
     CallHierarchyComponent,
-    RelatedLocationsComponent
+    RelatedLocationsComponent,
+    KeysPipe
   ],
   imports: [
     BrowserModule,

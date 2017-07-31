@@ -19,28 +19,16 @@ export class Utility {
     return `rgb(${redValue}, ${greenValue}, 0)`;
   }
 
-  static flattenObjectToString(obj: any, exclude: ((value: any) => boolean), prefix = '', accumulator?: string[]): string[] {
-    const res = (accumulator === undefined) ? [] : accumulator;
-
-    Object.keys(obj).forEach(key => {
-      const val = obj[key];
-      if (val === null) {
-        return;
-      }
-
-      if (typeof val === 'object' && !(val instanceof Array)) {
-        this.flattenObjectToString(val, exclude, prefix + key + ' - ', res);
-      } else if (!exclude(val) || val instanceof Array) {
-        res.push(prefix + key + ': ' + val.toString());
-      }
-
-    });
-
-    return res;
-  }
-
   static getGutterID(gutter: string): string {
-    return gutter.split(' ').join('-');
+    return gutter.replace(/[^a-z0-9]/g, function (s) {
+      const c = s.charCodeAt(0);
+      if (c === 32) {
+        return '-';
+      } else if (c >= 65 && c <= 90) {
+        return '_' + s.toLowerCase();
+      }
+      return '__' + ('000' + c.toString(16)).slice(-4);
+    });
   }
 
   static sortLineValues(values: LineValue[]): LineValue[] {

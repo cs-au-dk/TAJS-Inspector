@@ -133,6 +133,16 @@ export class EditorComponent implements AfterViewInit {
               return elem;
             });
             break;
+          case 'BOOLEAN':
+            this.insertGutterMakers(gutter.data.data, id, (line, value) => {
+              const elem = <HTMLElement> document.createElement('span');
+              elem.className = 'colored-gutter center';
+              elem.innerHTML = '&nbsp;';
+              elem.title = gutter.description;
+              elem.style.backgroundColor = (value) ? '#07FF00' : '#FF0000';
+              return elem;
+            });
+            break;
           default:
             break;
         }
@@ -191,10 +201,13 @@ export class EditorComponent implements AfterViewInit {
   }
 
   private getGutterWidth(kind: GutterKind): number {
-    if (kind === 'STRING') {
-      return 30;
-    } else if (kind === 'NUMBER') {
-      return 4;
+    switch (kind) {
+      case 'STRING':
+        return 30;
+      case 'NUMBER':
+        return 4;
+      case 'BOOLEAN':
+        return 1;
     }
   }
 }

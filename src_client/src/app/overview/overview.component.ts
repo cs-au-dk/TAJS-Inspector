@@ -1,6 +1,5 @@
 import {Component, OnInit} from '@angular/core';
 import {CodeService} from '../code.service';
-import {Utility} from '../utility';
 import {GutterSums} from '../gutter-sums';
 import {SettingsService} from '../settings.service';
 
@@ -11,8 +10,7 @@ import {SettingsService} from '../settings.service';
 })
 export class OverviewComponent implements OnInit {
   sums: GutterSums[] = [];
-  flattenedOptions: string[];
-  experimentalOptions: BoxedExperimentalOption[];
+  optionData: OptionData = {options: {}};
   filterQuery: string;
   aggregates: string[];
 
@@ -23,10 +21,7 @@ export class OverviewComponent implements OnInit {
   ngOnInit() {
     this.aggregates = this.settingsService.getAggregateGutters();
     this.codeService.getSums(this.aggregates).then((s: GutterSums[]) => this.sums = s);
-    this.codeService.getOptionData().then((options: OptionData) => {
-      this.flattenedOptions = Utility.flattenObjectToString(options.options, val => (val === false || val === -1));
-      this.experimentalOptions = options.experimentalOptions;
-    });
+    this.codeService.getOptionData().then((options: OptionData) => this.optionData = options);
   }
 
 }

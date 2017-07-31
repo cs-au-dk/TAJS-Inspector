@@ -1,18 +1,10 @@
 <div class="container-fluid" style="margin-top: 20px">
   <div class="row">
-    <div class="col-xs-6">
-      <h4>Options</h4>
+    <div class="col-xs-12">
+      <h4>Analysis Options</h4>
       <ul>
-        <li *ngFor="let option of flattenedOptions">
-          {{option}}
-        </li>
-      </ul>
-    </div>
-    <div class="col-xs-6">
-      <h4>Experimental options</h4>
-      <ul>
-        <li *ngFor="let option of experimentalOptions">
-          <strong>{{option.value}}:</strong> {{option.kind}}
+        <li *ngFor="let k of optionData.options | keys">
+          <strong>{{k}}</strong>: {{optionData.options[k]}}
         </li>
       </ul>
     </div>

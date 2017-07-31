@@ -11,7 +11,7 @@ import {CodeService} from '../code.service';
 export class SettingsModalComponent implements OnInit {
   @ViewChild(ModalComponent)
   modal: ModalComponent;
-  gutters: { name: string, visible: boolean, aggregate: boolean }[] = [];
+  gutters: { name: string, kind: GutterKind, visible: boolean, aggregate: boolean }[] = [];
   nameFilterQuery: string;
   descriptionFilterQuery: string;
 
@@ -26,6 +26,7 @@ export class SettingsModalComponent implements OnInit {
     this.codeService.getAvailableGutters().then((gs: Gutter<any>[]) =>
       this.gutters = gs.map(g => ({
         name: g.name
+        , kind: g.kind
         , description: g.description
         , visible: visibleGutters.some(c => c === g.name)
         , aggregate: aggregateGutters.some(c => c === g.name)

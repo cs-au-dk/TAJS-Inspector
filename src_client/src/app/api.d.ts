@@ -1,4 +1,8 @@
-// Generated using typescript-generator version 1.19.294 on 2017-07-07 15:24:02.
+// Generated using typescript-generator version 1.19.294 on 2017-07-31 08:10:37.
+
+interface OptionData {
+    options: { [index: string]: string };
+}
 
 interface Optional<T> {
     value: T;
@@ -74,26 +78,13 @@ interface SourceRange {
     lineEnd: number;
 }
 
-interface BoxedExperimentalOption {
-    kind: string;
-    value: string;
-}
-
-interface BoxedOptionValues {
-}
-
-interface OptionData {
-    options: BoxedOptionValues;
-    experimentalOptions: BoxedExperimentalOption[];
-}
-
 interface CompositeValue {
     values: SingleValue[];
 }
 
 interface DescribedObject extends SingleValue {
     rendering: string;
-    kind: ObjectKind;
+    invokable: boolean;
     id: ObjectID;
 }
 
@@ -102,10 +93,7 @@ interface DescribedPrimitive extends SingleValue {
 }
 
 interface DescribedProperties {
-    prototype: CompositeValue;
-    internal: CompositeValue;
-    array: CompositeValue;
-    nonArray: CompositeValue;
+    metaProperties: { [index: string]: CompositeValue };
     properties: { [index: string]: CompositeValue };
 }
 
@@ -114,7 +102,7 @@ interface SingleValue {
 
 type RelatedLocationKind = "NODE" | "BLOCK" | "LINE";
 
-type GutterKind = "NUMBER" | "STRING";
+type GutterKind = "NUMBER" | "STRING" | "BOOLEAN";
 
 type LineValueKind = "UNKNOWN" | "VARIABLE" | "REGISTER" | "FIXED_PROPERTY" | "DYNAMIC_PROPERTY";
 
@@ -124,4 +112,4 @@ type MessageLevel = "INFO" | "WARN" | "ERROR";
 
 type MessageSource = "ANALYSIS_BEHAVIOR" | "ANALYSIS_RESULT";
 
-type ObjectKind = "OBJECT" | "FUNCTION" | "ARRAY" | "STRING" | "BOOLEAN" | "NUMBER" | "REGEXP" | "DATE" | "ERROR" | "MATH" | "ACTIVATION" | "ARGUMENTS";
+type ObjectKind = "CALLABLE" | "NON_CALLABLE";
