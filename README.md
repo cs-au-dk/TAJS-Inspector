@@ -4,8 +4,8 @@ TAJS Inspector is a web-based interface to display TAJS analysis results. It is 
 
 ## Components
 
-The project is split into two components: a server side (Java) that receives data from the analysis (TAJS) implementation, and a 
-client side (JavaScript) that receives data from the server side.  
+The project is split into two components: a server side (Java) that receives data from the analysis (TAJS) implementation, and a
+client side (JavaScript) that receives data from the server side.
 
 ### Client
 
@@ -13,12 +13,12 @@ The client side is implemented as an Angular/TypeScript project. It has its own 
 
 ### Server
 
-The server side is implemented in plain Java, with dependencies on gson, log4j and jetty (see [build.gradle](build.gradle). 
+The server side is implemented in plain Java, with dependencies on gson, log4j and jetty (see [build.gradle](build.gradle).
 
 Users of the server only need to be concerned with the [api-package](src/dk/brics/inspector/api), and the main entry point class [InspectorSetup](src/dk/brics/inspector/InspectorSetup.java).
 
 In order to use the inspector, an analysis-specific implementaion of [InspectorAPI](src/dk/brics/inspector/api/InspectorAPI.java) needs to be provided to [InspectorSetup](src/dk/brics/inspector/InspectorSetup.java):
- 
+
  ```java
 InspectorSetup.simpleStart(new MyAnalysisAPIImplementation());
 ```
@@ -31,8 +31,8 @@ This will start the server, and open the client-side in a browser window.
 Implementors of [InspectorAPI](src/dk/brics/inspector/api/InspectorAPI.java)-instances should be aware of the following:
 
 - the InspectorAPI methods should be thread safe (the server is multi-threaded, and does not attempt to synchronize accesses to the InspectorAPI).
-- the InspectorAPI methods should be idempotent   
-                 
+- the InspectorAPI methods should be idempotent
+
 ## Building
 
 The entire project can be built with and a very rough build script:
@@ -50,7 +50,7 @@ The jar-file needs to be run in an environment with its dependencies present (se
 ## Notes for TAJS development
 
 ### Runtime
- 
+
 Build the project and copy the jar to TAJS/lib:
 
 ```bash
@@ -65,12 +65,3 @@ Use gradle to create javadoc:
 $ ./gradlew javadoc
 $ ls build/docs/javadoc/
 ```
-
-
-
-## Generalization note 
-
-Abstract the remaining TAJS-specific parts to get an inspector that is independent of TAJS (and JavaScript):
-  - Most enums
-  - Options
-  - Object structure (DescribedProperties)`
