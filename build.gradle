@@ -18,7 +18,7 @@ sourceSets {
             srcDir 'src'
         }
         resources {
-            srcDir 'src_client/dist/'
+            srcDir 'src_client/gradle_dist'
         }
     }
 }
@@ -66,7 +66,7 @@ task npmInstall(type:Exec) {
 task buildAngular(type:Exec) {
   workingDir 'src_client'
 
-  commandLine 'node_modules/@angular/cli/bin/ng', 'build', '--prod', '--aot'
+  commandLine 'node_modules/@angular/cli/bin/ng', 'build', '--prod', '--aot', '--output-path', 'gradle_dist/dk/brics/inspector/client/standard-js-client'
 
   //store the output instead of printing to the console:
   standardOutput = new ByteArrayOutputStream()
@@ -77,5 +77,4 @@ task buildAngular(type:Exec) {
 }
 
 buildAngular.dependsOn npmInstall
-buildAngular.dependsOn generateTypeScript
 compileJava.dependsOn buildAngular
