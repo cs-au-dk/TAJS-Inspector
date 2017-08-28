@@ -17,6 +17,9 @@ sourceSets {
         java {
             srcDir 'src'
         }
+        resources {
+            srcDir 'src_client/dist/'
+        }
     }
 }
 
@@ -54,3 +57,25 @@ compileJava {
     options.encoding = 'UTF-8'
     options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
 }
+
+task npmInstall(type:Exec) {
+  workingDir 'src_client'
+  commandLine 'npm', 'install'
+}
+
+task buildAngular(type:Exec) {
+  workingDir 'src_client'
+
+  commandLine 'node_modules/@angular/cli/bin/ng', 'build', '--prod', '--aot'
+
+  //store the output instead of printing to the console:
+  standardOutput = new ByteArrayOutputStream()
+
+  ext.output = {
+    return standardOutput.toString()
+  }
+}
+
+buildAngular.dependsOn npmInstall
+buildAngular.dependsOn generateTypeScript
+compileJava.dependsOn buildAngular
