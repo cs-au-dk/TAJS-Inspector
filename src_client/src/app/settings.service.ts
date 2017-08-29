@@ -27,7 +27,7 @@ export class SettingsService {
   }
 
   getVisibilityLineValueToolbar(): boolean {
-    return JSON.parse(localStorage.getItem(this.STORAGE_KEY_VISIBLE_LINEVALUES)) || false;
+    return JSON.parse(localStorage.getItem(this.STORAGE_KEY_VISIBLE_LINEVALUES)) || true;
   }
 
   setVisibilityLineValueToolbar(visible: boolean): void {
