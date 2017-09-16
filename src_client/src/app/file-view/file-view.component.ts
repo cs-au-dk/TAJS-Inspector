@@ -2,8 +2,8 @@ import {AfterViewInit, Component, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {CodeService} from '../code.service';
 import {EditorComponent} from '../editor/editor.component';
-import {SettingsService} from '../settings.service';
 import {UIStateStore} from '../ui-state.service';
+import {SettingsService} from '../settings.service';
 
 @Component({
   selector: 'app-file-viewer',
@@ -14,6 +14,7 @@ import {UIStateStore} from '../ui-state.service';
 })
 export class FileViewComponent implements AfterViewInit {
   @ViewChild(EditorComponent) editor: EditorComponent;
+  storagePrefix: string;
   files: FileDescription[];
   currentFile: FileID;
   filterQuery: string;
@@ -23,6 +24,7 @@ export class FileViewComponent implements AfterViewInit {
               private settingsService: SettingsService,
               private route: ActivatedRoute,
               public uiStateStore: UIStateStore) {
+    this.storagePrefix = settingsService.STORAGE_KEY_PREFIX;
     this.uiStateStore.file.subscribe(file => this.currentFile = file.id);
   }
 
@@ -43,14 +45,6 @@ export class FileViewComponent implements AfterViewInit {
 
   resolve(line: number) {
     return this.editor.cm.instance.getDoc().getLine(line - 1);
-  }
-
-  get isVisibleLineValues(): boolean {
-    return this.settingsService.getVisibilityLineValueToolbar();
-  }
-
-  set isVisibleLineValues(visible: boolean) {
-    this.settingsService.setVisibilityLineValueToolbar(visible);
   }
 
 }

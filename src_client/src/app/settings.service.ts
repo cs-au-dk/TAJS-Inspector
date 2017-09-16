@@ -2,10 +2,9 @@ import {Injectable} from '@angular/core';
 
 @Injectable()
 export class SettingsService {
-  private readonly STORAGE_KEY_PREFIX = 'dk.brics.tajs.la2';
-  private readonly STORAGE_KEY_VISIBLE_GUTTERS = `${this.STORAGE_KEY_PREFIX}/visibleGutters`;
-  private readonly STORAGE_KEY_AGGREGATE_GUTTERS = `${this.STORAGE_KEY_PREFIX}/aggregateGutters`;
-  private readonly STORAGE_KEY_VISIBLE_LINEVALUES = `${this.STORAGE_KEY_PREFIX}/lineValues/visible`;
+  public readonly STORAGE_KEY_PREFIX = 'dk.brics.tajs.inspector';
+  private readonly STORAGE_KEY_VISIBLE_GUTTERS = `${this.STORAGE_KEY_PREFIX}.visibleGutters`;
+  private readonly STORAGE_KEY_AGGREGATE_GUTTERS = `${this.STORAGE_KEY_PREFIX}.aggregateGutters`;
 
   constructor() {
   }
@@ -24,14 +23,6 @@ export class SettingsService {
 
   setAggregateGutters(gutters: string[]): void {
     localStorage.setItem(this.STORAGE_KEY_AGGREGATE_GUTTERS, JSON.stringify(gutters));
-  }
-
-  getVisibilityLineValueToolbar(): boolean {
-    return JSON.parse(localStorage.getItem(this.STORAGE_KEY_VISIBLE_LINEVALUES)) || true;
-  }
-
-  setVisibilityLineValueToolbar(visible: boolean): void {
-    localStorage.setItem(this.STORAGE_KEY_VISIBLE_LINEVALUES, JSON.stringify(visible));
   }
 
 }

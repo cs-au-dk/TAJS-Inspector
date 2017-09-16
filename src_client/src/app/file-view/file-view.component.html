@@ -1,13 +1,14 @@
 <horizontal-split-pane [primary-component-initialratio]="0.9"
                        (on-ended-resizing)="refresh()"
-                       [secondary-component-toggled-off]="!isVisibleLineValues"
                        [secondary-component-minsize]="100"
                        [primary-component-minsize]="100"
-                       [local-storage-key]="'lineAnalysis1'">
+                       [local-storage-key]="storagePrefix + '.FileView1'">
   <div class="split-pane-content-primary h-100 component overflow-auto">
     <div class="hw-100">
       <vertical-split-pane [primary-component-initialratio]="0.15"
-                           [local-storage-key]="'lineAnalysis2'">
+                           [secondary-component-minsize]="100"
+                           [primary-component-minsize]="100"
+                           [local-storage-key]="storagePrefix + '.FileView2'">
         <div class="split-pane-content-primary h-100 overflow-auto">
           <div class="hw-100">
             <h4>Files</h4>
@@ -31,7 +32,9 @@
         <div class="split-pane-content-secondary h-100">
 
           <vertical-split-pane [primary-component-initialratio]="0.6"
-                               [local-storage-key]="'lineAnalysis3'">
+                               [secondary-component-minsize]="100"
+                               [primary-component-minsize]="100"
+                               [local-storage-key]="storagePrefix + '.FileView3'">
             <div class="split-pane-content-primary h-100 overflow-auto " style="padding-right: 5px;">
               <app-file-editor></app-file-editor>
             </div>
