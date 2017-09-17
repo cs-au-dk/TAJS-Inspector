@@ -90,9 +90,9 @@ export class LineValuesComponent {
   }
 
   jumpTo(file: FileID, line: number, context: DescribedContext) {
-    this.uiStateStore.addToJumpHistory(new Landmark(this.currentFile, this.currentPosition.line
-      , `lineValue (origin), ${this.selectedContext.rendering}`));
-    this.uiStateStore.addToJumpHistory(new Landmark(file, line, `lineValue (destination), ${context.rendering}`));
+    this.uiStateStore.addToJumpHistory(new Landmark(this.currentFile, this.currentPosition.line + 1
+      , `line value (origin), ${this.selectedContext.rendering}`));
+    this.uiStateStore.addToJumpHistory(new Landmark(file, line, `line value (destination), ${context.rendering}`));
     this.uiStateStore.changeFileAndPosition(file, {line: line - 1, ch: 0});
     this.selectedContext = context;
   }

@@ -103,7 +103,7 @@ export class RelatedLocationsComponent {
   jumpTo(file: FileID, line: number, context: DescribedContext) {
     this.uiStateStore.changeFileAndPosition(file, {line: line - 1, ch: 0});
     this.uiStateStore.changeContext(context);
-    this.uiStateStore.addToJumpHistory(new Landmark(this.currentFile, this.currentPosition.line
+    this.uiStateStore.addToJumpHistory(new Landmark(this.currentFile, this.currentPosition.line + 1
       , `related location, ${ (this.forwards) ? 'forwards' : 'backwards'} (origin)`));
     this.uiStateStore.addToJumpHistory(new Landmark(file, line
       , `related location, ${ (this.forwards) ? 'forwards' : 'backwards'} (destination)`));

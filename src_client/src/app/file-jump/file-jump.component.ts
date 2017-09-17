@@ -36,7 +36,7 @@ export class FileJumpComponent implements OnInit {
         .map(g => g.name)
         .filter(g => storedGutters.indexOf(g) !== -1));
     this.codeService.getSortedLineData().then((s: Dictionary<any>) => this.sortedLines = s);
-
+    this.uiStateStore.jumpHistory.subscribe(_ => this.historyBackLevel = 0);
     // 'Hack' together with host listener on window:popstate for overriding browser back
     history.pushState(null, document.title, location.href);
   }
@@ -80,8 +80,8 @@ export class FileJumpComponent implements OnInit {
 
   goHistoryBack() {
     const jumpHistory = this.uiStateStore.getCurrentJumpHistory();
-    if (jumpHistory[this.historyBackLevel]) {
-      this.doJump(jumpHistory[this.historyBackLevel]);
+    if (jumpHistory[this.historyBackLevel + 1]) {
+      this.doJump(jumpHistory[this.historyBackLevel + 1]);
       this.historyBackLevel++;
     }
   }
@@ -89,8 +89,8 @@ export class FileJumpComponent implements OnInit {
   goHistoryForwards() {
     const jumpHistory = this.uiStateStore.getCurrentJumpHistory();
     if (jumpHistory[this.historyBackLevel - 1]) {
-      this.historyBackLevel--;
       this.doJump(jumpHistory[this.historyBackLevel - 1]);
+      this.historyBackLevel--;
     }
   }
 

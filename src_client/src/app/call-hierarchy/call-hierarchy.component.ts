@@ -96,7 +96,7 @@ export class CallHierarchyComponent {
   jumpTo(file: FileID, line: number, context: DescribedContext) {
     this.uiStateStore.changeFileAndPosition(file, {line: line - 1, ch: 0});
     this.uiStateStore.changeContext(context);
-    this.uiStateStore.addToJumpHistory(new Landmark(this.currentFile, this.currentPosition.line, `call hierarchy (origin)`));
+    this.uiStateStore.addToJumpHistory(new Landmark(this.currentFile, this.currentPosition.line + 1, `call hierarchy (origin)`));
     this.uiStateStore.addToJumpHistory(new Landmark(file, line, `call hierarchy (destination)`));
   }
 

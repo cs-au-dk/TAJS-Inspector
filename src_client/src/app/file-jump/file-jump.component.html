@@ -42,10 +42,10 @@
 </h5>
 <a *ngFor="let landmark of uiStateStore.jumpHistory | async | slice: 0:10; let i = index"
    class="list-group-item"
-   (click)="doJump(landmark)">
+   (click)="doJump(landmark); historyBackLevel = i">
   <div class="overflow-ellipsis"
-       [class.text-primary]="i === (historyBackLevel - 1)"
-       title="{{landmark.description}} - line {{landmark.line}}: {{landmark.id}}">
+       [class.text-primary]="i === historyBackLevel"
+       title="{{landmark.description}} - {{landmark.file}}:{{landmark.line}}">
     {{landmark.description}} - {{landmark.file}}:{{landmark.line}}
   </div>
 </a>
