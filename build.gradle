@@ -62,23 +62,33 @@ compileJava {
     options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
 }
 
+
 task npmInstall(type:Exec) {
-  workingDir 'src_client'
-  commandLine 'npm', 'install'
+    workingDir 'src_client'
+    if (System.properties['os.name'].toLowerCase().contains('windows')) {
+        executable = "cmd"
+        args = ["/c", "npm", "install"]
+    } else {
+        commandLine('npm', 'install')
+    }
 }
 
 task buildAngular(type:Exec) {
-  workingDir 'src_client'
+    workingDir 'src_client'
+    if  (System.properties['os.name'].toLowerCase().contains('windows')) {
+        executable = "cmd"
+        args = ["/c", 'ng', 'build', '--prod', '--aot', '--output-path', 'gradle_dist\\dk\\brics\\inspector\\client\\standard-js-client']
+    } else {
+        commandLine('node_modules/@angular/cli/bin/ngbuild', '--prod', '--aot', '--output-path', 'gradle_dist/dk/brics/inspector/client/standard-js-client')
+    }
+    //store the output instead of printing to the console:
+    standardOutput = new ByteArrayOutputStream()
 
-  commandLine 'node_modules/@angular/cli/bin/ng', 'build', '--prod', '--aot', '--output-path', 'gradle_dist/dk/brics/inspector/client/standard-js-client'
-
-  //store the output instead of printing to the console:
-  standardOutput = new ByteArrayOutputStream()
-
-  ext.output = {
-    return standardOutput.toString()
-  }
+    ext.output = {
+        return standardOutput.toString()
+    }
 }
+
 
 buildAngular.dependsOn npmInstall
 // comment to speed-up gradle compilation speed 
