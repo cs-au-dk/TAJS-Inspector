@@ -79,7 +79,7 @@ task buildAngular(type:Exec) {
         executable = "cmd"
         args = ["/c", 'ng', 'build', '--prod', '--aot', '--output-path', 'gradle_dist\\dk\\brics\\inspector\\client\\standard-js-client']
     } else {
-        commandLine('node_modules/@angular/cli/bin/ngbuild', '--prod', '--aot', '--output-path', 'gradle_dist/dk/brics/inspector/client/standard-js-client')
+        commandLine('node_modules/@angular/cli/bin/ng', 'build', '--prod', '--aot', '--output-path', 'gradle_dist/dk/brics/inspector/client/standard-js-client')
     }
     //store the output instead of printing to the console:
     standardOutput = new ByteArrayOutputStream()
