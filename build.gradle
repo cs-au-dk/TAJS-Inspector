@@ -36,6 +36,10 @@ buildscript {
     }
 }
 
+task wrapper(type: Wrapper) {
+    gradleVersion = '3.5'
+}
+
 task generateApiDocs(type: Javadoc) {
     source = sourceSets.main.allJava
     title = 'TAJS Inspector API documentation'
@@ -77,4 +81,5 @@ task buildAngular(type:Exec) {
 }
 
 buildAngular.dependsOn npmInstall
-compileJava.dependsOn buildAngular
+// comment to speed-up gradle compilation speed 
+//compileJava.dependsOn buildAngular
