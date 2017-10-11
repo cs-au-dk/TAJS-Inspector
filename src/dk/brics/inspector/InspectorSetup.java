@@ -109,7 +109,7 @@ public class InspectorSetup {
                 Runtime.getRuntime().exec("xdg-open " + uri);
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            System.out.println("Browser cannot be opended for inspector, ignoring");
         }
     }
 
