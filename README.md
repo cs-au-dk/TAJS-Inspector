@@ -49,7 +49,7 @@ The jar-file needs to be run in an environment with its dependencies present (se
 
 ## Notes for TAJS development
 
-### Runtime
+### Runtime for TAJS master
 
 Build the project and copy the jar to TAJS/lib:
 
@@ -57,6 +57,15 @@ Build the project and copy the jar to TAJS/lib:
 $ ./simple-build.sh
 $ cp dist/inspector.jar ~/tajs/lib
 ```
+To save TAJS developer from the burden of performing this step, pre-built jar file need to be always generated and commited in this repository in the `dist` folder.
+
+### Runtime for TAJS extended
+
+Run the following command to generate the html files, gradle will take care of making them available to TAJS as resources
+```bash
+$ ./gradew buildAngular
+```
+To save TAJS developer from the burden of performing this step, pre-built html files need to be always generated and commited in this repository in the `src_client/gradle_dist` folder.
 
 ### Javadoc
 
