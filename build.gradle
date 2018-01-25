@@ -1,5 +1,5 @@
 apply plugin: 'java'
-apply plugin: 'cz.habarta.typescript-generator'
+//apply plugin: 'cz.habarta.typescript-generator'
 apply plugin: 'idea'
 
 repositories {
@@ -39,7 +39,7 @@ buildscript {
 task wrapper(type: Wrapper) {
     gradleVersion = '3.5'
 }
-
+/*
 task generateApiDocs(type: Javadoc) {
     source = sourceSets.main.allJava
     title = 'TAJS Inspector API documentation'
@@ -56,7 +56,7 @@ generateTypeScript {
     jsonLibrary = 'jackson2'
     outputKind = 'global'
 }
-
+*/
 compileJava {
     options.encoding = 'UTF-8'
     options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
