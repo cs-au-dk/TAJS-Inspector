@@ -153,7 +153,7 @@ export class LineValuesComponent {
           .then((ls: any[]) => ls.map(l => Object.assign(l, {nodeType: StructuralNodeType.Jump})));
         break;
       case SemanticNodeType.Property:
-        const location = node.parent.parent.data.location;
+        const location = this.findParentNodeWithLocation(node).data.location;
         res = (location && location.id)
           ? this.codeService.getObjectProperties(objectID, location.id)
             .then((props: DescribedProperties) => TreeBuilder.getSubtreeForProperties(props))
@@ -206,5 +206,12 @@ export class LineValuesComponent {
         location: v.location,
         children: v.value.values.map(value => TreeBuilder.getSubtreeForValue(value))
       })));
+  }
+
+  private findParentNodeWithLocation(node : TreeNode) : TreeNode {
+      while (!node.data.location) {
+        node = node.parent;
+      }
+      return node;
   }
 }
