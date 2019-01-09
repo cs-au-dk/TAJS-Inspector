@@ -17,6 +17,7 @@ import dk.brics.inspector.api.model.ids.ObjectID;
 import dk.brics.inspector.client.InspectorClient;
 import org.apache.log4j.Logger;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ErrorPageErrorHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
@@ -77,7 +78,13 @@ public class InspectorServer {
      */
     public RunningServer startServer() {
         int port = TESTING ? 12345 : 0;
-        Server server = new Server(port);
+        Server server = new Server();
+
+        // Accept connection from all hosts (not just localhost)
+        ServerConnector connector = new ServerConnector(server);
+        connector.setPort(port);
+        server.addConnector(connector);
+
         server.setStopAtShutdown(true);
         server.setStopTimeout(0);
         WebAppContext handler = new WebAppContext();
