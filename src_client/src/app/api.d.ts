@@ -1,4 +1,4 @@
-// Generated using typescript-generator version 1.19.294 on 2017-07-31 08:10:37.
+// Generated using typescript-generator version 1.19.294 on 2019-06-01 23:33:54.
 
 interface OptionData {
     options: { [index: string]: string };
