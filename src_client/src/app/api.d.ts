@@ -1,4 +1,4 @@
-// Generated using typescript-generator version 1.19.294 on 2019-06-01 23:33:54.
+// Generated using typescript-generator version 1.19.294 on 2020-04-10 16:18:13.
 
 interface OptionData {
     options: { [index: string]: string };
@@ -86,6 +86,21 @@ interface DescribedObject extends SingleValue {
     rendering: string;
     invokable: boolean;
     id: ObjectID;
+}
+
+interface DescribedPartition {
+    rendering: string;
+    value: CompositeValue;
+}
+
+interface DescribedPartitionedValue extends SingleValue {
+    rendering: string;
+    partitions: DescribedPartitionsForNode[];
+}
+
+interface DescribedPartitionsForNode {
+    rendering: string;
+    partitions: DescribedPartition[];
 }
 
 interface DescribedPrimitive extends SingleValue {
